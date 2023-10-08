@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo Raw input flow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <style>
+      .arrow {
+        pointer-events: none;
+        z-index: 11;
+      }
+
+      .arrow__path {
+        stroke: #000;
+        fill: transparent;
+        stroke-dasharray: 4 2;
+      }
+
+      .arrow__head line {
+        stroke: #000;
+        stroke-width: 1px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="h-screen w-screen p-8">
+      <div class="h-full w-full relative bg-gray-100">
+        <!-- Single box -->
+        <div
+          class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-32 top-32 z-10"
+        >
+          <h2
+            class="cursor-grab bg-cyan-300 px-2 py-2 text-center uppercase text-bold"
+          >
+            Input
+          </h2>
+          <div>
+            <textarea class="w-full h-full" name="" id="" rows="3">
+Hello</textarea
+            >
+          </div>
+          <div
+            id="from-1"
+            class="absolute -right-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 transform rounded-md transition-all hover:scale-150 hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200"
+          ></div>
+        </div>
+        <!-- End Single box -->
+
+        <!-- Single box -->
+        <div
+          class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[590px] top-[290px] z-10"
+        >
+          <h2
+            class="cursor-grab bg-cyan-300 px-2 py-2 text-center uppercase text-bold"
+          >
+            Middle chain
+          </h2>
+          <div>
+            <textarea class="w-full h-full" name="" id="" rows="3">
+      Hello</textarea
+            >
+          </div>
+          <div
+            id="to-1"
+            class="absolute -left-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 transform rounded-md transition-all hover:scale-150 hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200"
+          ></div>
+          <div
+            id="from-2"
+            class="absolute -right-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 transform rounded-md transition-all hover:scale-150 hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200"
+          ></div>
+        </div>
+        <!-- End Single box -->
+        <!-- Single box -->
+        <div
+          class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[1130px] top-[800px] z-10"
+        >
+          <h2
+            class="cursor-grab bg-cyan-300 px-2 py-2 text-center uppercase text-bold"
+          >
+            Middle chain
+          </h2>
+          <div>
+            <textarea class="w-full h-full" name="" id="" rows="3">
+      Hello</textarea
+            >
+          </div>
+          <div
+            id="to-2"
+            class="absolute -left-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 transform rounded-md transition-all hover:scale-150 hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200"
+          ></div>
+          <div
+            id="from-3"
+            class="absolute -right-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 transform rounded-md transition-all hover:scale-150 hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200"
+          ></div>
+        </div>
+        <!-- End Single box -->
+        <!-- Single box -->
+        <div
+          class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[1100px] top-[1000px] z-10"
+        >
+          <h2
+            class="cursor-grab bg-cyan-300 px-2 py-2 text-center uppercase text-bold"
+          >
+            Output
+          </h2>
+          <div>
+            <textarea class="w-full h-full" name="" id="" rows="3">
+      Hello</textarea
+            >
+          </div>
+          <div
+            id="to-3"
+            class="absolute -left-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 transform rounded-md transition-all hover:scale-150 hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200"
+          ></div>
+        </div>
+        <!-- End Single box -->
+      </div>
+    </div>
+
+    <script src="/test.js"></script>
+    <script>
+      $(".draggable").draggable();
+      const arr = arrowCreate({
+        from: document.getElementById("from-1"),
+        to: document.getElementById("to-1"),
+      });
+      const arr2 = arrowCreate({
+        from: document.getElementById("from-2"),
+        to: document.getElementById("to-2"),
+      });
+      const arr3 = arrowCreate({
+        from: document.getElementById("from-3"),
+        to: document.getElementById("to-3"),
+      });
+
+      document.body.appendChild(arr.node);
+      document.body.appendChild(arr2.node);
+      document.body.appendChild(arr3.node);
+    </script>
+  </body>
+</html>
