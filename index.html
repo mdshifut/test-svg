@@ -12,22 +12,54 @@
         pointer-events: none;
         z-index: 11;
       }
-
-      .arrow__path {
-        stroke: #000;
+      .arrow-svg-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+      }
+      .arrow-svg-container path {
+        stroke: rgb(3, 17, 19);
         fill: transparent;
-        stroke-dasharray: 4 2;
+        stroke-width: 4px;
+        opacity: 0.4;
+        pointer-events: auto;
+        transition: stroke 0.3s;
+        z-index: 9;
+        /* stroke-dasharray: 4 2; */
+      }
+      .line-close-btn {
+        background-color: red !important;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        font-size: 18px;
+        border-radius: 50px;
+        height: 20px;
+        width: 20px;
+        border: 1px solid #fff;
+        /* visibility: hidden;
+        opacity: 0; */
+        transition: 0.3s;
+      }
+      .arrow-svg-container path:hover,
+      .arrow-svg-container path.active {
+        cursor: pointer;
+        stroke: rgb(6, 182, 212);
       }
 
-      .arrow__head line {
-        stroke: #000;
-        stroke-width: 1px;
+      .arrow-svg-container path:hover ~ foreignObject .line-close-btn {
+        visibility: visible;
+        opacity: 1;
       }
     </style>
   </head>
   <body>
     <div class="h-screen w-screen p-8">
-      <div class="h-full w-full relative bg-gray-100">
+      <div class="h-full w-full relative bg-gray-100 overflow-auto">
         <!-- Single box -->
         <div
           class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-32 top-32 z-10"
@@ -44,7 +76,7 @@ Hello testing 2</textarea
           </div>
           <div
             id="from-1"
-            class="absolute -right-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 transform rounded-md transition-all hover:scale-150 hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200"
+            class="handle from-handle cursor-crosshair from-node-el absolute -right-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200"
           ></div>
         </div>
         <!-- End Single box -->
@@ -64,12 +96,11 @@ Hello testing 2</textarea
             >
           </div>
           <div
-            id="to-1"
-            class="absolute -left-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 transform rounded-md transition-all hover:scale-150 hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200"
+            class="handle handle-receiver cursor-crosshair absolute -left-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200"
           ></div>
           <div
             id="from-2"
-            class="absolute -right-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 transform rounded-md transition-all hover:scale-150 hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200"
+            class="handle from-handle cursor-crosshair absolute -right-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200"
           ></div>
         </div>
         <!-- End Single box -->
@@ -88,12 +119,12 @@ Hello testing 2</textarea
             >
           </div>
           <div
-            id="to-2"
-            class="absolute -left-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 transform rounded-md transition-all hover:scale-150 hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200"
+            fromnodes="from-1"
+            class="handle handle-receiver cursor-crosshair absolute -left-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200"
           ></div>
           <div
             id="from-3"
-            class="absolute -right-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 transform rounded-md transition-all hover:scale-150 hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200"
+            class="handle from-handle cursor-crosshair absolute -right-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200"
           ></div>
         </div>
         <!-- End Single box -->
@@ -113,15 +144,146 @@ Hello testing 2</textarea
           </div>
           <div
             id="to-3"
-            class="absolute -left-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 transform rounded-md transition-all hover:scale-150 hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200"
+            class="handle handle-receiver cursor-crosshair absolute -left-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200"
           ></div>
         </div>
         <!-- End Single box -->
       </div>
     </div>
-
     <script src="./test.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/arrow-line/dist/arrow-line.min.js"></script>
+
     <script>
+      $(".draggable").draggable();
+
+      function createLine(from, to) {
+        var arrowLineInstance = arrowLine(from, to, {
+          curvature: 1,
+          sourcePosition: "topCenter",
+          destinationPosition: "topCenter",
+          // svgParentSelector: "#svg-container",
+          endpoint: { type: "none" },
+        });
+
+        const path = arrowLineInstance.getRawSvgPath();
+        const svgId = arrowLineInstance.getParentSvgId();
+        const $svg = $("#" + svgId)
+          .addClass("arrow-svg-container")
+          .css("pointer-events", "auto");
+
+        let pathIsActive = false;
+        const removeClassHandler = () => {
+          $svg.find("path").removeClass("active");
+          pathIsActive = false;
+        };
+
+        $(document).on("click", removeClassHandler);
+
+        $(path).click((e) => {
+          e.stopPropagation();
+          removeClassHandler();
+          $(path).addClass("active");
+          pathIsActive = true;
+        });
+
+        const closeBtn = $("<button>")
+          .attr("type", "button")
+          .text("x")
+          .addClass("line-close-btn");
+
+        const foreignObject = $(
+          document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "foreignObject"
+          )
+        )
+          .height(20)
+          .width(20)
+          .append(closeBtn)
+          .attr("x", $(path).offset().left + path.getBBox().width / 2 - 10)
+          .attr("y", $(path).offset().top + path.getBBox().height / 2 - 10)
+          .appendTo("#" + svgId);
+
+        // Watch div position
+
+        function dragHandler(event, ui) {
+          arrowLineInstance.update({ source: from });
+          foreignObject
+            .attr("x", $(path).offset().left + path.getBBox().width / 2 - 10)
+            .attr("y", $(path).offset().top + path.getBBox().height / 2 - 10);
+          if (pathIsActive) {
+            $(path).addClass("active");
+            pathIsActive = true;
+          }
+        }
+        $(from + ", " + to)
+          .parents(".draggable")
+          .on("drag", dragHandler);
+
+        $(closeBtn).on("click", () => {
+          $(document).unbind("click", removeClassHandler);
+          $(from + ", " + to)
+            .parents(".draggable")
+            .unbind("drag", dragHandler);
+          $(to).removeAttr("fromnodes");
+          arrowLineInstance.remove();
+          foreignObject.remove();
+        });
+      } // createLine function end
+
+      // createLine("#from-1", '[fromnodes="from-1"]');
+      // createLine("#from-2", "#to-2");
+
+      // stop handle propagation
+      $(".handle").on("mousedown", (e) => e.stopPropagation());
+
+      let fromId = null;
+      let arrowLineInstance = null;
+
+      $(".from-handle").on("mousedown", function (e) {
+        fromId = e.target.id;
+      });
+
+      $(document).on("mousemove", (e) => {
+        if (fromId && !arrowLineInstance) {
+          arrowLineInstance = arrowLine(
+            "#" + fromId,
+            { x: event.pageX, y: event.pageY },
+            {
+              curvature: 1,
+              // svgParentSelector: "#svg-container",
+              endpoint: { type: "none" },
+            }
+          );
+        } else if (fromId && arrowLineInstance) {
+          arrowLineInstance.update({
+            destination: { x: event.pageX, y: event.pageY },
+          });
+        }
+      });
+
+      $(document).on("mouseup", (e) => {
+        const isReceiver = $(e.target).hasClass("handle-receiver");
+        const attr = $(e.target).attr("fromnodes");
+
+        if (isReceiver && fromId && !attr) {
+          $(e.target).attr("fromnodes", fromId);
+          createLine("#" + fromId, `[fromnodes="${fromId}"]`);
+        }
+        fromId = null;
+        arrowLineInstance?.remove();
+        arrowLineInstance = null;
+      });
+
+      $(".handle-receiver[fromnodes]").each(function (i, ele) {
+        const fromNodes = $(ele).attr("fromnodes");
+        if (fromNodes) {
+          console.log($(ele).attr("fromnodes"));
+          createLine("#" + fromNodes, `[fromnodes="${fromNodes}"]`);
+        }
+      });
+    </script>
+    <!-- <script>
       $(".draggable").draggable();
       const arr = arrowCreate({
         from: document.getElementById("from-1"),
@@ -136,9 +298,16 @@ Hello testing 2</textarea
         to: document.getElementById("to-3"),
       });
 
-      document.body.appendChild(arr.node);
-      document.body.appendChild(arr2.node);
-      document.body.appendChild(arr3.node);
-    </script>
+      // document.body.appendChild(arr.node);
+      // document.body.appendChild(arr2.node);
+      // document.body.appendChild(arr3.node);
+
+      function createFlowLine (){
+
+      }
+      var test = arrowLine("#from-1", "#to-1");
+
+      // Select all the
+    </script> -->
   </body>
 </html>
