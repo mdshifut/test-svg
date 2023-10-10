@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo Raw input flow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+    rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+    }
+
+    */ .arrow {
+      pointer-events: none;
+    }
+
+    .arrow__path {
+      stroke: #686868;
+      fill: transparent;
+      stroke-width: 3px;
+      /* stroke-dasharray: 4 2; */
+    }
+
+    .arrow__path:hover,
+    .arrow__path.active {
+      cursor: pointer;
+      stroke: rgb(6, 182, 212);
+    }
+
+    .arrow__head {
+      display: none;
+    }
+
+
+    .line-close-btn {
+      background-color: red !important;
+      position: fixed;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 5px;
+      height: 25px;
+      width: 25px;
+      line-height: 30px;
+      /* border: 3px solid #797979; */
+      visibility: hidden;
+      opacity: 0;
+      transition: hidden 0.3s;
+      transition: opacity 0.3s;
+      transform: translateX(-50%) translateY(-50%);
+    }
+
+    .line-close-btn.hover {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="h-screen w-screen p-8">
+
+    <div class="h-full w-full relative bg-gray-100 overflow-auto">
+      <!-- Single box -->
+      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-32 top-32 z-10">
+        <h2 class="cursor-grab bg-cyan-300 px-2 py-2 text-center uppercase text-bold">
+          Input
+        </h2>
+        <div>
+          <textarea class="w-full h-full" name="" id="" rows="3">
+Hello testing 2</textarea>
+        </div>
+        <div id="from-1" element-role="from-element"
+          class="handle from-handle cursor-crosshair from-node-el absolute -right-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
+        </div>
+      </div>
+      <!-- End Single box -->
+
+      <!-- Single box -->
+      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[590px] top-[290px] z-10">
+        <h2 class="cursor-grab bg-cyan-300 px-2 py-2 text-center uppercase text-bold">
+          Middle chain 1
+          <div>
+            <textarea class="w-full h-full" name="" id="" rows="3">
+      Hello</textarea>
+          </div>
+          <div element-role="to-element" fromnodes="from-1"
+            class="handle handle-receiver cursor-crosshair absolute -left-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
+          </div>
+          <div id="from-2" element-role="from-element"
+            class="handle from-handle cursor-crosshair absolute -right-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
+          </div>
+      </div>
+      <!-- End Single box -->
+      <!-- Single box -->
+      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[1130px] top-[800px] z-10">
+        <h2 class="cursor-grab bg-cyan-300 px-2 py-2 text-center uppercase text-bold">
+          Middle chain 2
+        </h2>
+        <div>
+          <textarea class="w-full h-full" name="" id="" rows="3">
+      Hello</textarea>
+        </div>
+        <div element-role="to-element"
+          class="handle handle-receiver cursor-crosshair absolute -left-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
+        </div>
+        <div id="from-3" element-role="from-element"
+          class="handle from-handle cursor-crosshair absolute -right-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
+        </div>
+      </div>
+      <!-- End Single box -->
+      <!-- Single box -->
+      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[1100px] top-[1000px] z-10">
+        <h2 class="cursor-grab bg-cyan-300 px-2 py-2 text-center uppercase text-bold">
+          Output
+        </h2>
+        <div>
+          <textarea class="w-full h-full" name="" id="" rows="3">
+      Hello</textarea>
+        </div>
+        <div id="to-3" element-role="to-element"
+          class="handle handle-receiver cursor-crosshair absolute -left-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
+        </div>
+      </div>
+      <!-- End Single box -->
+    </div>
+  </div>
+  <script src="./test.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/arrow-line/dist/arrow-line.min.js"></script>
+  <script> $(".draggable").draggable();</script>
+  <script>
+
+
+
+
+    //   arrow path active class remover
+    function removeClassHandler() { $(".arrow__path").removeClass("active") };
+
+    // Remove  arrow path active class  when cliked outside
+    $(document).on('click', removeClassHandler)
+
+    // Connection creator function
+    function createConnection(fromNode, toNode) {
+
+      // Create   connection
+      var arrowLine = arrowCreate({
+        from: {
+          node: fromNode,
+          direction: DIRECTION.RIGHT,
+          translation: [0.5, 0],
+        },
+        to: {
+          node: toNode,
+          direction: DIRECTION.LEFT,
+          translation: [-0.5, 0],
+        },
+      });
+
+
+
+      // append the connection in the body
+      var arrowWrapperDiv = $('<div>').css('position', 'fixed').append(arrowLine.node).appendTo('body')
+      var arrowSvg = $(arrowWrapperDiv).find('.arrow')
+      var arrowPath = $(arrowWrapperDiv).find('.arrow__path')
+      var closeBtn = $("<button>")
+      // Arrow path click add active class
+      arrowPath.click(function (e) {
+        e.stopPropagation();
+        removeClassHandler();
+        $(this).addClass("active");
+
+      });
+      // Close button click handler 
+      $(closeBtn).on('click', function () {
+        arrowLine.clear()
+        arrowWrapperDiv.remove()
+        $(toNode).removeAttr('fromnodes')
+      })
+
+      // Close button
+      closeBtn
+        .attr("type", "button")
+        .text("x").mouseleave(function () {
+          if ($(this).hasClass('hover')) $(this).removeClass('hover')
+        })
+        .addClass("line-close-btn").appendTo(arrowWrapperDiv);
+
+
+
+      $(arrowPath).hover(function () {
+        // Set close button position
+        closeBtn.css({
+          top: $(arrowPath).offset().top + arrowPath[0].getBoundingClientRect().height / 2,
+          left: $(arrowPath).offset().left + arrowPath[0].getBoundingClientRect().width / 2,
+        })
+        $(closeBtn).addClass('hover')
+      }).mouseleave(function (e) {
+
+        // When mouse leave from the path and the mouse land element is not the button then remove the hover class
+        if (!$(e.relatedTarget).hasClass('line-close-btn')) $(closeBtn).removeClass('hover')
+      })
+
+
+
+    } // End create connection function
+
+
+
+    // Draw all connections 
+    $('[fromnodes]').each(function (i, e) {
+      var fromnode;
+      // Get the from node
+      var fromNodeId = $(e).attr('fromnodes')
+      if (fromNodeId) {
+        fromnode = $('#' + fromNodeId)[0]
+      }
+      if (fromnode) createConnection(fromnode, e);
+
+    })
+
+
+
+    //  Drag functionalities
+
+    let dragFrom = null;
+    let mouseDragLine = null;
+    let pointerToElement = $("<div>")
+      .attr("id", "pointer-to-element")
+      .css({
+        position: "absolute",
+        height: 1,
+        width: 1,
+        left: 0,
+        top: 0,
+        "z-index": -1,
+        visibility: "hidden",
+        opacity: "hidden",
+      })
+      .appendTo("body");
+
+
+    // drag start when click into the from element
+    $('[element-role="from-element"]').on("click", function (e) {
+
+      // If already a line is dragging then ignore it 
+      if (dragFrom && mouseDragLine) return;
+      dragFrom = this;
+      // If there is no pointer element then add pointer element into the body
+      if (!$("#pointer-to-element")[0]) pointerToElement.appendTo("body");
+      // Add pointerToElement position according to event position
+      pointerToElement.css({ left: e.clientX, top: e.clientY });
+      // Draw svg line 
+      mouseDragLine = arrowCreate({
+        from: {
+          node: dragFrom,
+          direction: DIRECTION.RIGHT,
+          translation: [0.5, 0],
+        },
+        to: {
+          node: pointerToElement[0],
+          direction: DIRECTION.LEFT,
+          translation: [-0.5, 0],
+        },
+      });
+      $(mouseDragLine.node).appendTo("body");
+    });
+
+    // Set pointerToElement position according to mouse movement when user drag line 
+    $(document).on("mousemove", function (e) {
+      if (!dragFrom && !mouseDragLine) return;
+
+      pointerToElement.css({ left: e.clientX, top: e.clientY });
+    });
+
+    $(document).on("click", function (e) {
+      var currentTarget = e.target;
+      // If target element is from element or target element is already connected then do nothing
+      if (
+        $(currentTarget).attr("element-role") === 'from-element' ||
+        $(currentTarget).attr("fromnodes")
+      )
+        return;
+
+      // if target element is to element and the to element don't have any connection
+      if ($(currentTarget).attr("element-role") === 'to-element') {
+        $(currentTarget).attr('fromnodes', $(dragFrom).attr('id'))
+        createConnection(dragFrom, currentTarget)
+      }
+
+      // If click element is not to element then clear the line remove all
+      mouseDragLine?.clear();
+      mouseDragLine = null;
+      dragFrom = null;
+    });
+  </script>
+</body>
+
+</html>
