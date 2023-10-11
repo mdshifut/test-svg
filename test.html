@@ -94,7 +94,7 @@ Hello testing 2</textarea>
             <textarea class="w-full h-full" name="" id="" rows="3">
       Hello</textarea>
           </div>
-          <div element-role="to-element" fromnodes="from-1"
+          <div element-role="to-element"
             class="handle handle-receiver cursor-crosshair absolute -left-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
           </div>
           <div id="from-2" element-role="from-element"
@@ -128,7 +128,7 @@ Hello testing 2</textarea>
           <textarea class="w-full h-full" name="" id="" rows="3">
       Hello</textarea>
         </div>
-        <div id="to-3" element-role="to-element"
+        <div id="to-3" element-role="to-element" fromnodes="from-3,from-1,from-2"
           class="handle handle-receiver cursor-crosshair absolute -left-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
         </div>
       </div>
@@ -142,14 +142,32 @@ Hello testing 2</textarea>
 
 
 
+    // =================================================================================================
+    // =================================================================================================
+    // Helper functions
+    // =================================================================================================
+    // =================================================================================================
 
     //   arrow path active class remover
     function removeClassHandler() { $(".arrow__path").removeClass("active") };
-
     // Remove  arrow path active class  when cliked outside
     $(document).on('click', removeClassHandler)
 
+    function getFromNodesArr(node) {
+
+      var fromNodesString = $(node).attr('fromnodes')
+      var fromNodes = []
+      if (fromNodesString) {
+        fromNodes = fromNodesString.split(',')
+      }
+      return fromNodes
+    }
+
+    // =================================================================================================
+    // =================================================================================================
     // Connection creator function
+    // =================================================================================================
+    // =================================================================================================
     function createConnection(fromNode, toNode) {
 
       // Create   connection
@@ -180,11 +198,15 @@ Hello testing 2</textarea>
         $(this).addClass("active");
 
       });
+
       // Close button click handler 
       $(closeBtn).on('click', function () {
         arrowLine.clear()
         arrowWrapperDiv.remove()
-        $(toNode).removeAttr('fromnodes')
+        var updatesConnections = getFromNodesArr(toNode).filter(function (v) {
+          return v !== $(fromNode).attr('id')
+        })
+        $(toNode).attr('fromnodes', updatesConnections)
       })
 
       // Close button
@@ -216,22 +238,34 @@ Hello testing 2</textarea>
 
 
 
-    // Draw all connections 
-    $('[fromnodes]').each(function (i, e) {
-      var fromnode;
-      // Get the from node
-      var fromNodeId = $(e).attr('fromnodes')
-      if (fromNodeId) {
-        fromnode = $('#' + fromNodeId)[0]
-      }
-      if (fromnode) createConnection(fromnode, e);
+    // =================================================================================================
+    // =================================================================================================
+    // drag start when click into the from element
+    // =================================================================================================
+    // =================================================================================================
 
+    $('[fromnodes]').each(function (i, e) {
+      // Get all the from nodes
+      var fromNodes = getFromNodesArr(e)
+
+      // Create connections
+      $(fromNodes).each(function (i, fromNodeId) {
+        var fromNode = $('#' + fromNodeId)[0]
+        if (fromNode) createConnection(fromNode, e);
+      })
     })
 
 
 
-    //  Drag functionalities
 
+
+    // =================================================================================================
+    // =================================================================================================
+    // drag start when click into the from element
+    // =================================================================================================
+    // =================================================================================================
+
+    //  Drag functionalities
     let dragFrom = null;
     let mouseDragLine = null;
     let pointerToElement = $("<div>")
@@ -248,8 +282,7 @@ Hello testing 2</textarea>
       })
       .appendTo("body");
 
-
-    // drag start when click into the from element
+    // Drag event
     $('[element-role="from-element"]').on("click", function (e) {
 
       // If already a line is dragging then ignore it 
@@ -275,25 +308,38 @@ Hello testing 2</textarea>
       $(mouseDragLine.node).appendTo("body");
     });
 
+    // =================================================================================================
+    // =================================================================================================
     // Set pointerToElement position according to mouse movement when user drag line 
+    // =================================================================================================
+    // =================================================================================================
     $(document).on("mousemove", function (e) {
       if (!dragFrom && !mouseDragLine) return;
 
       pointerToElement.css({ left: e.clientX, top: e.clientY });
     });
 
+    // =================================================================================================
+    // =================================================================================================
+    //  Drag end handler
+    // =================================================================================================
+    // =================================================================================================
     $(document).on("click", function (e) {
       var currentTarget = e.target;
-      // If target element is from element or target element is already connected then do nothing
+      // If target element is a from element then do nothing
       if (
-        $(currentTarget).attr("element-role") === 'from-element' ||
-        $(currentTarget).attr("fromnodes")
+        $(currentTarget).attr("element-role") === 'from-element'
       )
         return;
 
-      // if target element is to element and the to element don't have any connection
-      if ($(currentTarget).attr("element-role") === 'to-element') {
-        $(currentTarget).attr('fromnodes', $(dragFrom).attr('id'))
+      var dragFromId = $(dragFrom).attr('id');
+      var currentTargetConnections = getFromNodesArr(currentTarget)
+
+      // if target element is to element and the to element not connected with the dragFrom node
+      if ($(currentTarget).attr("element-role") === 'to-element' && !currentTargetConnections.includes(dragFromId)) {
+        currentTargetConnections.push(dragFromId)
+
+        $(currentTarget).attr('fromnodes', currentTargetConnections.toString())
         createConnection(dragFrom, currentTarget)
       }
 
