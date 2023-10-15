@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo Raw input flow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+  <style>
+    .arrow {
+      pointer-events: none;
+      z-index: 11;
+    }
+
+    .arrow-svg-container {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    .arrow-svg-container path {
+      stroke: rgb(3, 17, 19);
+      fill: transparent;
+      stroke-width: 4px;
+      opacity: 0.4;
+      pointer-events: auto;
+      transition: stroke 0.3s;
+      z-index: 9;
+      /* stroke-dasharray: 4 2; */
+    }
+
+    .line-close-btn {
+      background-color: red !important;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-size: 18px;
+      border-radius: 50px;
+      height: 20px;
+      width: 20px;
+      border: 1px solid #fff;
+      visibility: hidden;
+      opacity: 0;
+      transition: 0.3s;
+    }
+
+    .arrow-svg-container path:hover,
+    .arrow-svg-container path.active {
+      cursor: pointer;
+      stroke: rgb(6, 182, 212);
+    }
+
+    .arrow-svg-container path:hover~foreignObject .line-close-btn,
+    .line-close-btn:hover {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+
+  <svg id="parent" class="arrow-svg-container fixed left-0 top-0"> </svg>
+  <div class="h-screen w-screen p-8">
+    <div class="h-full w-full relative bg-gray-100 overflow-auto relative">
+      <svg id="svg-selector" class="absolute left-0 top-0 w-full h-full">
+        <path id="path" fill="none" stroke="black" stroke-width="1"></path>
+
+      </svg>
+      <!-- Single box -->
+      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-32 top-32 z-10">
+        <h2 class="cursor-grab bg-cyan-300 px-2 py-2 text-center uppercase text-bold">
+          Input
+        </h2>
+        <div>
+          <textarea class="w-full h-full" name="" id="" rows="3">
+Hello testing 2</textarea>
+        </div>
+        <div id="from"
+          class="handle from-handle cursor-crosshair from-node-el absolute -right-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
+        </div>
+      </div>
+      <!-- End Single box -->
+
+      <!-- Single box -->
+      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[590px] top-[290px] z-10">
+        <h2 class="cursor-grab bg-cyan-300 px-2 py-2 text-center uppercase text-bold">
+          Middle chain
+        </h2>
+        <div>
+          <textarea class="w-full h-full" name="" id="" rows="3">
+      Hello</textarea>
+        </div>
+        <div id="to"
+          class="handle handle-receiver cursor-crosshair absolute -left-5 top-1/2 -translate-y-2 h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
+        </div>
+
+      </div>
+      <!-- End Single box -->
+
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/arrow-line/dist/arrow-line.min.js"></script>
+
+  <!-- <script>
+    $(document).ready(() => {
+      $(".draggable").draggable();
+      function test() {
+        var direction = 'r2l'
+        function getCoords(el) {
+          const parentEl = el.offsetParent;
+          const box = el.getBoundingClientRect();
+
+          return {
+            top: box.top + window.pageYOffset + (parentEl?.scrollTop || 0),
+            right: box.right + window.pageXOffset + (parentEl?.scrollLeft || 0),
+            bottom: box.bottom + window.pageYOffset + (parentEl?.scrollTop || 0),
+            left: box.left + window.pageXOffset + (parentEl?.scrollLeft || 0),
+          };
+        }
+
+        function getNewCoordinates() {
+          const el1Coords = getCoords($('#from')[0]);
+          const el2Coords = getCoords($('#to')[0]);
+
+          const el1Dimesion = {
+            width: el1Coords.right - el1Coords.left,
+            height: el1Coords.bottom - el1Coords.top,
+          };
+
+          const el2Dimesion = {
+            width: el2Coords.right - el2Coords.left,
+            height: el2Coords.bottom - el2Coords.top,
+          };
+
+          let start = {
+            x: el1Coords.right,
+            y: el1Coords.top + el1Dimesion.height / 2,
+          };
+
+          let end = {
+            x: el2Coords.left,
+            y: el2Coords.top + el2Dimesion.height / 2,
+          };
+
+          switch (direction) {
+            case "l2l":
+              start.x = el1Coords.left;
+              break;
+            case "l2r":
+              start.x = el1Coords.left;
+              end.x = el2Coords.right;
+              break;
+            case "r2r":
+              start.x = el1Coords.right;
+              end.x = el2Coords.right;
+              break;
+            case "b2t":
+              start = {
+                x: el1Coords.left + el1Dimesion.width / 2,
+
+                y: el1Coords.bottom,
+              };
+              end = {
+                x: el2Coords.left + el2Dimesion.width / 2,
+                y: el2Coords.top,
+              };
+              break;
+            case "b2b":
+              start = {
+                x: el1Coords.left + el1Dimesion.width / 2,
+                y: el1Coords.bottom,
+              };
+              end = {
+                x: el2Coords.left + el2Dimesion.width / 2,
+                y: el2Coords.bottom,
+              };
+              break;
+            case "t2t":
+              start = {
+                x: el1Coords.left + el1Dimesion.width / 2,
+                y: el1Coords.top,
+              };
+              end = {
+                x: el2Coords.left + el2Dimesion.width / 2,
+                y: el2Coords.top,
+              };
+              break;
+            case "t2b":
+              start = {
+                x: el1Coords.left + el1Dimesion.width / 2,
+                y: el1Coords.top,
+              };
+              end = {
+                x: el2Coords.left + el2Dimesion.width / 2,
+                y: el2Coords.bottom,
+              };
+              break;
+            default:
+              break;
+          }
+
+          return { start, end };
+        }
+        const coordinates = getNewCoordinates()
+        const startPoint = coordinates.start;
+        const endPoint = coordinates.end;
+
+        const distanceX = endPoint.x - startPoint.x;
+        const distanceY = endPoint.y - startPoint.y;
+        const grids = 4;
+        const stepX = distanceX / grids;
+        const stepY = distanceY / grids;
+        $('#path').attr('d', `M
+            ${startPoint.x} ${startPoint.y} 
+            q 
+            ${(stepX * grids) / 2} 0 
+            ${(stepX * grids) / 2} ${(stepY * grids) / 2}
+            q 
+            0 ${(stepY * grids) / 2} 
+            ${(stepX * grids) / 2} ${(stepY * grids) / 2}
+        `)
+      }
+
+      test()
+      $('#from,#to')
+        .parents(".draggable")
+        .on("drag", () => {
+
+          test()
+        });
+
+
+    })
+  </script>
+ -->
+
+  <script>
+
+
+    const pointBezier = (point, containerVisibleSize) => ({
+      x: point.x + containerVisibleSize.width * point.translation[0],
+      y: point.y + containerVisibleSize.height * point.translation[1],
+    });
+
+
+
+
+
+    const nodeValue = (node) => {
+      const nodeSelected = typeof node === 'function'
+        ? node()
+        : node;
+
+      if (!document.body.contains(nodeSelected)) return null;
+
+      return nodeSelected;
+    };
+
+    const getAnchorPoint = (anchor) => {
+      const node = nodeValue(anchor.node);
+      if (!node) throw new Error("point is null, check if 'from'/'to' exists");
+
+      const rect = node.getBoundingClientRect();
+
+      const svg = document.getElementById('svg-selector').getBoundingClientRect()
+      // const x = rect.x || (rect).left;
+      // const y = rect.y || (rect).top;
+      const x = rect.x - svg.x;
+      const y = rect.y - svg.y;
+
+      switch (anchor.direction) {
+        case DIRECTION.TOP_LEFT:
+          return { x, y };
+        case DIRECTION.TOP:
+          return {
+            x: x + rect.width / 2,
+            y: y,
+          };
+        case DIRECTION.TOP_RIGHT:
+          return {
+            x: x + rect.width,
+            y: y,
+          };
+        case DIRECTION.RIGHT:
+          return {
+            x: x + rect.width,
+            y: y + rect.height / 2,
+          };
+        case DIRECTION.BOTTOM_LEFT:
+          return {
+            x,
+            y: y + rect.height,
+          };
+        case DIRECTION.BOTTOM:
+          return {
+            x: x + rect.width / 2,
+            y: y + rect.height,
+          };
+        case DIRECTION.BOTTOM_RIGHT:
+          return {
+            x: x + rect.width,
+            y: y + rect.height,
+          };
+        case DIRECTION.LEFT:
+          return {
+            x,
+            y: y + rect.height / 2,
+          };
+        default:
+          return {
+            x: x + rect.width / 2,
+            y: y + rect.height / 2,
+          }
+      }
+    };
+
+    const castToAnchor = (anchorParam) => {
+      if (typeof anchorParam === 'function' || anchorParam instanceof HTMLElement) return {
+        node: anchorParam,
+      }
+
+      return anchorParam
+    }
+
+    const createAnchorWithPoint = (
+      anchorParam
+    ) => {
+      const anchor = castToAnchor(anchorParam)
+      const position = getAnchorPoint(anchor);
+
+      return {
+        ...anchor,
+        ...position,
+      };
+    };
+    const TRANSLATION_DEFAULT = 0.3
+    const DIRECTION = {
+      TOP_LEFT: 'top-left',
+      TOP: 'top',
+      TOP_RIGHT: 'top-right',
+      RIGHT: 'right',
+      BOTTOM_LEFT: 'bottom-left',
+      BOTTOM: 'bottom',
+      BOTTOM_RIGHT: 'bottom-right',
+      LEFT: 'left',
+    };
+    const autoAnchorWithPoint = (pointA, pointB) => {
+      if (pointA.translation && pointA.direction) return pointA
+
+      const autoAnchor = { ...pointA };
+
+      const setDirectionWhenEmpty = (direction) => {
+        if (!autoAnchor.direction) autoAnchor.direction = direction;
+      }
+
+      const setTranslationWhenEmpty = (translation) => {
+        if (!autoAnchor.translation) autoAnchor.translation = translation;
+      }
+
+      const setParamsWhenEmpty = (direction, translation) => {
+        setDirectionWhenEmpty(direction);
+        setTranslationWhenEmpty(translation);
+      }
+
+      const xDiff = Math.abs(pointA.x - pointB.x);
+      const yDiff = Math.abs(pointA.y - pointB.y);
+
+      if (xDiff > yDiff) {
+        if (pointA.x < pointB.x) setParamsWhenEmpty(DIRECTION.RIGHT, [TRANSLATION_DEFAULT, 0])
+        else setParamsWhenEmpty(DIRECTION.LEFT, [-TRANSLATION_DEFAULT, 0])
+      } else {
+        if (pointA.y < pointB.y) setParamsWhenEmpty(DIRECTION.BOTTOM, [0, TRANSLATION_DEFAULT])
+        else setParamsWhenEmpty(DIRECTION.TOP, [0, -TRANSLATION_DEFAULT])
+      }
+
+      return createAnchorWithPoint(autoAnchor)
+    }
+
+
+
+    const containerSize = (relativeFrom, relativeTo) => ({
+      width: Math.max(relativeFrom.x, relativeTo.x),
+      height: Math.max(relativeFrom.y, relativeTo.y),
+    });
+
+
+    const pointToArray = (point) => ([
+      point.x,
+      point.y,
+    ]);
+
+    const convertPathToSVG = (path) => {
+      const list = ['M'];
+
+      list.push(pointToArray(path[0]));
+      list.push('C');
+      list.push(pointToArray(path[1]));
+      list.push(',');
+      list.push(pointToArray(path[2]));
+      list.push(',');
+      list.push(pointToArray(path[3]));
+      return list.flat().join(' ').replace(/ ,/g, ',');
+    };
+
+
+
+
+
+
+    const pathListBezier = (
+      container,
+      padding,
+    ) => {
+      const path = [];
+
+      path.push(container.relativeFrom);
+      path.push(pointBezier(container.relativeFrom, container.size));
+      path.push(pointBezier(container.relativeTo, container.size));
+      path.push(container.relativeTo);
+      return path;
+    };
+
+
+    const arrowVector = (
+      from,
+      to,
+      headFactory
+    ) => {
+
+
+      const fromAnchor = createAnchorWithPoint(from);
+      const toAnchor = createAnchorWithPoint(to);
+
+      const relativeFrom = autoAnchorWithPoint(fromAnchor, toAnchor)
+      const relativeTo = autoAnchorWithPoint(toAnchor, fromAnchor)
+
+
+      const position = {
+        x: Math.min(relativeFrom.x, relativeTo.x),
+        y: Math.min(relativeFrom.y, relativeTo.y),
+      };
+
+
+
+      const size = containerSize(relativeFrom, relativeTo);
+
+      const path = pathListBezier({ position, size, relativeFrom, relativeTo }, { width: 0, height: 0 },);
+
+
+      const pathCommands = convertPathToSVG(path);
+
+
+
+      $('#path').attr('d', pathCommands)
+
+    };
+
+
+
+
+    $(document).ready(() => {
+      $(".draggable").draggable();
+      arrowVector(
+        {
+          node: document.getElementById('from'),
+          direction: DIRECTION.RIGHT,
+          translation: [0.12, 0],
+        },
+        {
+          node: document.getElementById('to'),
+          direction: DIRECTION.LEFT,
+          translation: [-0.12, 0],
+        },
+      )
+      $('#from,#to')
+        .parents(".draggable")
+        .on("drag", () => {
+          const svg = $('#svg-selector')
+          svg.width(svg.parent().get(0).scrollWidth)
+
+          setTimeout(() => {
+            arrowVector(
+              {
+                node: document.getElementById('from'),
+                direction: DIRECTION.RIGHT,
+                translation: [0.12, 0],
+              },
+              {
+                node: document.getElementById('to'),
+                direction: DIRECTION.LEFT,
+                translation: [-0.12, 0],
+              },
+            )
+          });
+        })
+
+
+    })
+  </script>
+</body>
+
+</html>

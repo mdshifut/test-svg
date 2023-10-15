@@ -153,6 +153,7 @@ Hello testing 2</textarea>
     // Remove  arrow path active class  when cliked outside
     $(document).on('click', removeClassHandler)
 
+    // Get form nodes attributes
     function getFromNodesArr(node) {
 
       var fromNodesString = $(node).attr('fromnodes')
@@ -203,10 +204,10 @@ Hello testing 2</textarea>
       $(closeBtn).on('click', function () {
         arrowLine.clear()
         arrowWrapperDiv.remove()
-        var updatesConnections = getFromNodesArr(toNode).filter(function (v) {
-          return v !== $(fromNode).attr('id')
-        })
-        $(toNode).attr('fromnodes', updatesConnections)
+        // var updatesConnections = getFromNodesArr(toNode).filter(function (v) {
+        //   return v !== $(fromNode).attr('id')
+        // })
+        // $(toNode).attr('fromnodes', updatesConnections)
       })
 
       // Close button
@@ -219,18 +220,19 @@ Hello testing 2</textarea>
 
 
 
+      // Arrow path hover place center of the path
       $(arrowPath).hover(function () {
         // Set close button position
         closeBtn.css({
           top: $(arrowPath).offset().top + arrowPath[0].getBoundingClientRect().height / 2,
           left: $(arrowPath).offset().left + arrowPath[0].getBoundingClientRect().width / 2,
-        })
-        $(closeBtn).addClass('hover')
+        }).addClass('hover')
       }).mouseleave(function (e) {
-
         // When mouse leave from the path and the mouse land element is not the button then remove the hover class
         if (!$(e.relatedTarget).hasClass('line-close-btn')) $(closeBtn).removeClass('hover')
       })
+
+
 
 
 
@@ -349,6 +351,7 @@ Hello testing 2</textarea>
       dragFrom = null;
     });
   </script>
+ 
 </body>
 
 </html>
