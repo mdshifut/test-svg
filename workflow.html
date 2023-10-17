@@ -445,6 +445,10 @@ Hello testing 2</textarea>
           $(svg).css({ width: this.scrollWidth, height: this.scrollHeight })
 
         })
+        $(window).on('resize', function () {
+          $(svg).css({ width: svgParentEl.scrollWidth, height: svgParentEl.scrollHeight })
+
+        })
 
       }
       return svg
@@ -576,6 +580,7 @@ Hello testing 2</textarea>
     // =============================
     var dragFromBlock = null
     var dragLine = null;
+    var mousePosition = { x: 0, y: 0 }
 
     function dragLineRemoveHandler() {
       if (dragFromBlock && dragLine && dragLine.remove) {
@@ -584,26 +589,30 @@ Hello testing 2</textarea>
         dragFromBlock = null;
       }
     }
-    function dragStartHandler(dragFromId) {
 
-      // First remove old dragline 
-      dragLineRemoveHandler()
-      dragFromBlock = $('#' + dragFromId);
-      dragLine = arrowVector(
-        {
-          from: {
-            id: dragFromId,
-            direction: DIRECTION.RIGHT,
-            translation: [0.12, 0],
-          },
-          to: {
-            x: $(dragFromBlock).find('.from-element').offset().left,
-            y: $(dragFromBlock).find('.from-element').offset().top,
-            direction: DIRECTION.LEFT,
-            translation: [-0.12, 0],
-          }, parent: '#block-container', closeButton: false, pathClass: 'drawLine'
-        }
-      )
+    function dragStartHandler(dragFromId) {
+      setTimeout(function () {
+
+        // First remove old dragline 
+        dragLineRemoveHandler()
+        dragFromBlock = $('#' + dragFromId);
+        dragLine = arrowVector(
+          {
+            from: {
+              id: dragFromId,
+              direction: DIRECTION.RIGHT,
+              translation: [0.04, 0],
+            },
+            to: {
+
+              x: mousePosition.x,
+              y: mousePosition.y,
+              direction: DIRECTION.LEFT,
+              translation: [-0.04, 0],
+            }, parent: '#block-container', closeButton: false, pathClass: 'drawLine'
+          }
+        )
+      })
     }
 
     // Update the dragline
@@ -612,7 +621,7 @@ Hello testing 2</textarea>
         dragLine.update({
           to: {
             x: e.clientX, y: e.clientY, direction: DIRECTION.LEFT,
-            translation: [-0.12, 0],
+            translation: [-0.03, 0],
           }
         })
 
@@ -621,6 +630,7 @@ Hello testing 2</textarea>
 
     // Remove dragline when click in the document
     $(document).on('click', function (e) {
+      mousePosition = { x: e.clientX, y: e.clientY }
       if (dragFromBlock && $(dragFromBlock)[0].contains(e.target)) return
       if (dragLine && dragLine.remove) {
 
@@ -635,7 +645,7 @@ Hello testing 2</textarea>
 
 
     // =============================
-    // Start create connections functions
+    // Start create connection  functions
     // =============================
 
 
@@ -663,33 +673,47 @@ Hello testing 2</textarea>
       )
 
     }
+
     function createConnectionFromList(fromList = [], toId) {
       $('.connection-group[to=' + toId + ']').remove()
       fromList.forEach(function (fromId) {
         createConnection(fromId, toId)
       })
     }
+
+    // =============================
+    // Delete Block connections
+    // =============================
+
+    function deleteBlockConnections(blockId) {
+      $('.connection-group[from=' + blockId + '],.connection-group[to=' + blockId + ']').remove()
+    }
   </script>
+
   <script>
     $(".draggable").draggable();
-    $("#block1 .from-element").on('click', function () {
+    $("#fromNode-from1").on('click', function () {
 
       dragStartHandler('block1')
     });
-    arrowVector(
-      {
-        from: {
-          id: 'block1',
-          direction: DIRECTION.RIGHT,
-          translation: [0.12, 0],
-        },
-        to: {
-          id: 'block3',
-          direction: DIRECTION.LEFT,
-          translation: [-0.12, 0],
-        }, parent: '#block-container', autoUpdate: true, closeButton: true
-      }
-    )
+    createConnection('block1', 'block2')
+    createConnection('block3', 'block4')
+    // createConnection('block1', 'block2')
+
+    // arrowVector(
+    //   {
+    //     from: {
+    //       id: 'block1',
+    //       direction: DIRECTION.RIGHT,
+    //       translation: [0.03, 0],
+    //     },
+    //     to: {
+    //       id: 'block3',
+    //       direction: DIRECTION.LEFT,
+    //       translation: [-0.03, 0],
+    //     }, parent: '#block-container', autoUpdate: true, closeButton: true
+    //   }
+    // )
 
   </script>
 </body>
