@@ -19,8 +19,8 @@
 
     }
 
-    .connection-g:hover .connection-path,
-    .connection-g.active .connection-path {
+    .connection-group:hover .connection-path,
+    .connection-group.active .connection-path {
       cursor: pointer;
       stroke: rgb(6, 182, 212);
     }
@@ -44,7 +44,7 @@
       cursor: pointer;
     }
 
-    .connection-close-btn .connection-g:hover .connection-close-btn {
+    .connection-group:hover .connection-close-btn {
       opacity: 1;
       visibility: visible;
 
@@ -78,7 +78,7 @@
     <div class="h-full w-full relative bg-gray-100 overflow-auto relative parent-selector" id="block-container">
 
       <!-- Single box -->
-      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-32 top-32 z-10">
+      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-32 top-32 z-10" id="block1">
         <h2 class="cursor-grab bg-cyan-300 px-2 py-2 text-center uppercase text-bold">
           Input
         </h2>
@@ -86,9 +86,9 @@
           <textarea class="w-full h-full" name="" id="" rows="3">
 Hello testing 2</textarea>
         </div>
-        <div id="fromNode-from1" class="from-node absolute -right-20 top-1/2 -translate-y-2 cursor-pointer">
+        <div id="fromNode-from1" class="absolute -right-20 top-1/2 -translate-y-2 cursor-pointer">
           <div
-            class="handle from-handle cursor-crosshair from-node-el h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
+            class="from-element from-handle cursor-crosshair from-node-el h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
           </div>
           <div>fromNode</div>
         </div>
@@ -96,7 +96,7 @@ Hello testing 2</textarea>
       <!-- End Single box -->
 
       <!-- Single box -->
-      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[590px] top-[290px] z-10">
+      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[590px] top-[290px] z-10" id="block2">
         <h2 class="cursor-grab bg-cyan-300 px-2 py-2 text-center uppercase text-bold">
           Middle chain
         </h2>
@@ -104,15 +104,15 @@ Hello testing 2</textarea>
           <textarea class="w-full h-full" name="" id="" rows="3">
       Hello</textarea>
         </div>
-        <div id="fromNode-from2" class="from-node absolute -right-20 top-1/2 -translate-y-2 cursor-pointer">
+        <div id="fromNode-from2" class="  absolute -right-20 top-1/2 -translate-y-2 cursor-pointer">
           <div
-            class="handle from-handle cursor-crosshair from-node-el h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
+            class="from-element  from-handle cursor-crosshair from-node-el h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
           </div>
           <div>fromNode</div>
         </div>
-        <div class="to-node absolute -left-16 top-1/2 -translate-y-2 text-right cursor-pointer" id="toNode-to1">
+        <div class="absolute -left-16 top-1/2 -translate-y-2 text-right cursor-pointer" id="toNode-to1">
           <div
-            class="handle from-handle cursor-crosshair from-node-el h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200 float-right">
+            class="to-element  from-handle cursor-crosshair from-node-el h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200 float-right">
           </div>
           <div>toNode</div>
         </div>
@@ -121,7 +121,7 @@ Hello testing 2</textarea>
       <!-- End Single box -->
 
       <!-- Single box -->
-      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[750px] top-[490px] z-10">
+      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[750px] top-[490px] z-10" id="block3">
         <h2 class="cursor-grab bg-cyan-300 px-2 py-2 text-center uppercase text-bold">
           Middle chain
         </h2>
@@ -129,15 +129,15 @@ Hello testing 2</textarea>
           <textarea class="w-full h-full" name="" id="" rows="3">
       Hello</textarea>
         </div>
-        <div id="fromNode-from3" class="from-node absolute -right-20 top-1/2 -translate-y-2 cursor-pointer">
+        <div id="fromNode-from3" class="absolute -right-20 top-1/2 -translate-y-2 cursor-pointer">
           <div
-            class="handle from-handle cursor-crosshair from-node-el h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
+            class="from-element  from-handle cursor-crosshair from-node-el h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
           </div>
           <div>fromNode</div>
         </div>
-        <div class="to-node absolute -left-16 top-1/2 -translate-y-2 text-right cursor-pointer" id="toNode-to2">
+        <div class="absolute -left-16 top-1/2 -translate-y-2 text-right cursor-pointer" id="toNode-to2">
           <div
-            class="handle from-handle cursor-crosshair from-node-el h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200 float-right">
+            class="to-element from-handle cursor-crosshair from-node-el h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200 float-right">
           </div>
           <div>toNode</div>
         </div>
@@ -146,7 +146,7 @@ Hello testing 2</textarea>
       <!-- End Single box -->
 
       <!-- Single box -->
-      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[950px] top-[700px] z-10">
+      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[950px] top-[700px] z-10" id="block4">
         <h2 class="cursor-grab bg-cyan-300 px-2 py-2 text-center uppercase text-bold">
           Middle chain
         </h2>
@@ -154,15 +154,15 @@ Hello testing 2</textarea>
           <textarea class="w-full h-full" name="" id="" rows="3">
       Hello</textarea>
         </div>
-        <div id="fromNode-from4" class="from-node absolute -right-20 top-1/2 -translate-y-2 cursor-pointer">
+        <div id="fromNode-from4" class="absolute -right-20 top-1/2 -translate-y-2 cursor-pointer">
           <div
-            class="handle from-handle cursor-crosshair from-node-el h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
+            class="from-element  cursor-crosshair from-node-el h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
           </div>
           <div>fromNode</div>
         </div>
-        <div class="to-node absolute -left-16 top-1/2 -translate-y-2 text-right cursor-pointer" id="toNode-to3">
+        <div class="absolute -left-16 top-1/2 -translate-y-2 text-right cursor-pointer" id="toNode-to3">
           <div
-            class="handle from-handle cursor-crosshair from-node-el h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200 float-right">
+            class="to-element   cursor-crosshair from-node-el h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200 float-right">
           </div>
           <div>toNode</div>
         </div>
@@ -171,7 +171,7 @@ Hello testing 2</textarea>
       <!-- End Single box -->
 
       <!-- Single box -->
-      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[750px] top-[1000px] z-10">
+      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[750px] top-[1000px] z-10" id="block5">
         <h2 class="cursor-grab bg-cyan-300 px-2 py-2 text-center uppercase text-bold">
           Middle chain
         </h2>
@@ -179,16 +179,16 @@ Hello testing 2</textarea>
           <textarea class="w-full h-full" name="" id="" rows="3">
       Hello</textarea>
         </div>
-        <div id="fromNode-from5" class="from-node absolute -right-20 top-1/2 -translate-y-2 cursor-pointer">
+        <div id="fromNode-from5" class="absolute -right-20 top-1/2 -translate-y-2 cursor-pointer">
           <div
-            class="handle from-handle cursor-crosshair from-node-el h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
+            class="from-element cursor-crosshair from-node-el h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200">
           </div>
           <div>fromNode</div>
         </div>
-        <div class="to-node absolute -left-16 top-1/2 -translate-y-2 text-right cursor-pointer" fromnodes="from1"
+        <div class="to-element absolute -left-16 top-1/2 -translate-y-2 text-right cursor-pointer" fromnodes="from1"
           id="toNode-to5">
           <div
-            class="handle from-handle cursor-crosshair from-node-el h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200 float-right">
+            class="to-element cursor-crosshair from-node-el h-4 w-4 origin-center scale-100 hover:scale-150 transform rounded-md transition-all hover:border-cyan-500 hover:bg-cyan-200 border-[2px] border-cyan-500 bg-cyan-200 float-right">
           </div>
           <div>toNode</div>
         </div>
@@ -197,126 +197,6 @@ Hello testing 2</textarea>
       <!-- End Single box -->
     </div>
   </div>
-
-  <script>
-    $(document).ready(function () {
-
-      // connectionCreator(from,to,closeHandler)
-      // params1:from=> any node element or any CSS selector string like 
-      // params2:to=> any node element or any CSS selector string like 
-      // params3:closeHandler=> When click on the close button this callback function will triggered 
-      // returns {update(),remove()}
-      // update({from,to}) from updating it's from and to arguments 
-      // remove() it will remove it from the server
-
-      window.connectionCreator = function (from, to, closeFunc) {
-        var fromNode, toNode;
-
-        if (typeof from === 'string') {
-          fromNode = $(from)[0]
-        } else {
-          fromNode = from
-        }
-        if (typeof to === 'string') {
-          toNode = $(to)[0]
-        } else {
-          toNode = to
-        }
-
-        return arrowVector({
-          from: {
-            node: fromNode,
-            direction: DIRECTION.RIGHT,
-            translation: [0.12, 0],
-          },
-          to: {
-            node: toNode,
-            direction: DIRECTION.LEFT,
-            translation: [-0.12, 0],
-          },
-          parent: '#block-container',
-          autoUpdate: true,
-          closeButton: !!closeFunc,
-          closeHandler: closeFunc
-        }
-        )
-
-      }
-
-      var oldConnections = {}
-      window.createConnection = function (fromList = [], to) {
-        if (!oldConnections[to]) {
-
-          oldConnections[to] = []
-        }
-        $(oldConnections[to]).each(function (i, e) { if (e && e.remove) e.remove() })
-
-        var arrowInstance = fromList.map(function (item) {
-          function lineCloseBtnClickHandler() {
-            if (bubble_fn_deleteConnection) bubble_fn_deleteConnection([item, to])
-            console.log([item, to])
-          }
-          var fromNodeEl = $('#fromNode-' + item).find('.handle')[0];
-          var toNodeEl = $('#toNode-' + to).find('.handle')[0]
-          if (!fromNodeEl || !toNodeEl) return null;
-          return connectionCreator(fromNodeEl, toNodeEl, lineCloseBtnClickHandler);
-        })
-        oldConnections[to] = arrowInstance
-      } //End createConnection
-
-
-      // =============================================
-      // Draw line 
-      // =============================================
-      var dragFrom;
-      var arrowInstance;
-      $(document).on('click', function (e) {
-
-        var dragTo = $(e.target).closest('.to-node')[0];
-
-        if (dragTo) {
-          var dragToId = $(dragTo).attr('id').replace('toNode-', '')
-          var newDrag = connectionCreator(dragFrom, $(dragTo).find('.handle')[0]);
-          if (oldConnections[dragToId]) { oldConnections[dragToId].push(newDrag) } else {
-            oldConnections[dragToId] = [newDrag]
-          }
-        }
-        if (arrowInstance && arrowInstance.remove) { arrowInstance.remove(); arrowInstance = null }
-        dragFrom = $(e.target).closest('.from-node').find('.handle')[0]
-
-        if (dragFrom) {
-          arrowInstance = arrowVector(
-            {
-              from: {
-                node: dragFrom,
-                direction: DIRECTION.RIGHT,
-                translation: [0.12, 0],
-              },
-              to: {
-                x: e.clientX, y: e.clientY,
-                direction: DIRECTION.LEFT,
-                translation: [-0.12, 0],
-              }, parent: '#block-container', closeButton: false, pathClass: 'drawLine'
-            }
-          )
-        }
-      })
-
-      $(document).on('mousemove', function (e) {
-        if (dragFrom && arrowInstance) {
-          arrowInstance.update({
-            to: {
-              x: e.clientX, y: e.clientY, direction: DIRECTION.LEFT,
-              translation: [-0.12, 0],
-            }
-          })
-
-        }
-      })
-
-
-    }) 
-  </script>
 
   <script>
 
@@ -571,20 +451,20 @@ Hello testing 2</textarea>
     } // End getSvgEl
 
     function createElements(svg, pathCommands, closeBtn = true) {
-      var gEl = $(document.createElementNS(w3u, 'g')).addClass('connection-g').appendTo(svg)
-      var pathEl = $(document.createElementNS(w3u, 'path')).addClass('connection-path').attr({ 'd': pathCommands.path, }).appendTo(gEl)[0]
+      var groupElement = $(document.createElementNS(w3u, 'g')).addClass('connection-group').appendTo(svg)
+      var pathEl = $(document.createElementNS(w3u, 'path')).addClass('connection-path').attr({ 'd': pathCommands.path, }).appendTo(groupElement)[0]
 
 
 
       // btn
       var $btn
       if (closeBtn) {
-        var foreignObject = $(document.createElementNS(w3u, 'foreignObject')).appendTo(gEl)
+        var foreignObject = $(document.createElementNS(w3u, 'foreignObject')).appendTo(groupElement)
         $btn = $('<button>').addClass('connection-close-btn').html(svgIcon).appendTo(foreignObject)
         var buttonSize = '20'
         foreignObject.css({ height: buttonSize, width: buttonSize })
 
-        $(gEl).hover(function () {
+        $(groupElement).hover(function () {
           var rect = pathEl.getBoundingClientRect()
           var svgRect = svg.getBoundingClientRect()
           var buttonSize = '20'
@@ -593,7 +473,7 @@ Hello testing 2</textarea>
       }
 
 
-      return { gEl: gEl, pathEl: pathEl, btn: $btn }
+      return { groupElement: groupElement, pathEl: pathEl, btn: $btn }
     } // create elements
 
 
@@ -602,7 +482,15 @@ Hello testing 2</textarea>
     ) {
 
       var from = options.from;
+      var fromId = from.id
+      if (fromId) {
+        from.node = $('#' + fromId).find('.from-element')[0]
+      }
       var to = options.to;
+      var toId = to.id
+      if (toId) {
+        to.node = $('#' + toId).find('.to-element')[0]
+      }
       var autoUpdate = options.autoUpdate;
       var closeHandler = options.closeHandler;
       var pathClass = options.pathClass || '';
@@ -611,7 +499,8 @@ Hello testing 2</textarea>
 
       var pathCommands = createPaths(from, to, svg)
       var elements = createElements(svg, pathCommands, options.closeButton)
-      var gEl = elements.gEl
+      var groupElement = elements.groupElement
+      $(groupElement).attr({ from: fromId, to: toId })
       var pathEl = elements.pathEl
       $(pathEl).addClass(pathClass)
       var $btn = elements.btn
@@ -619,7 +508,7 @@ Hello testing 2</textarea>
 
       if (autoUpdate) {
         intervalId = setInterval(function () {
-          if (gEl[0].isConnected) {
+          if (groupElement[0].isConnected) {
             var updatedPathCommands = createPaths(from, to, svg)
 
             // Only update when path is changed
@@ -644,22 +533,20 @@ Hello testing 2</textarea>
         $(pathEl).attr('d', updatedPathCommands.path)
       }
 
-      $(gEl).on('click', function (e) {
+
+      $(groupElement).on('click', function (e) {
         e.stopPropagation()
-        $('.connection-g').removeClass('active')
+        $('.connection-group').removeClass('active')
         $(this).addClass('active')
       })
 
-      function outsideGroupClickHandler(e) {
-        $('.connection-g').removeClass('active')
-      }
-      $(document).on('click', outsideGroupClickHandler)
+
 
 
       function remove() {
 
-        $(document).off('click', outsideGroupClickHandler)
-        gEl.remove()
+
+        groupElement.remove()
         clearInterval(intervalId)
       }
 
@@ -676,20 +563,128 @@ Hello testing 2</textarea>
 
 
     };
+    function outsideGroupClickHandler(e) {
+      $('.connection-group').removeClass('active')
+    }
+    $(document).on('click', outsideGroupClickHandler)
   </script>
 
-
   <script>
-    $(".draggable").draggable();
-    arrowVector(
-      {
+
+    // =============================
+    // Start drag functions 
+    // =============================
+    var dragFromBlock = null
+    var dragLine = null;
+
+    function dragLineRemoveHandler() {
+      if (dragFromBlock && dragLine && dragLine.remove) {
+        dragLine.remove()
+        dragLine = null;
+        dragFromBlock = null;
+      }
+    }
+    function dragStartHandler(dragFromId) {
+
+      // First remove old dragline 
+      dragLineRemoveHandler()
+      dragFromBlock = $('#' + dragFromId);
+      dragLine = arrowVector(
+        {
+          from: {
+            id: dragFromId,
+            direction: DIRECTION.RIGHT,
+            translation: [0.12, 0],
+          },
+          to: {
+            x: $(dragFromBlock).find('.from-element').offset().left,
+            y: $(dragFromBlock).find('.from-element').offset().top,
+            direction: DIRECTION.LEFT,
+            translation: [-0.12, 0],
+          }, parent: '#block-container', closeButton: false, pathClass: 'drawLine'
+        }
+      )
+    }
+
+    // Update the dragline
+    $(document).on('mousemove', function (e) {
+      if (dragLine && dragLine.update) {
+        dragLine.update({
+          to: {
+            x: e.clientX, y: e.clientY, direction: DIRECTION.LEFT,
+            translation: [-0.12, 0],
+          }
+        })
+
+      }
+    })
+
+    // Remove dragline when click in the document
+    $(document).on('click', function (e) {
+      if (dragFromBlock && $(dragFromBlock)[0].contains(e.target)) return
+      if (dragLine && dragLine.remove) {
+
+
+        dragLine.remove()
+        dragLine = null
+        dragFromBlock = null
+      }
+    })
+    // End drag functions
+
+
+
+    // =============================
+    // Start create connections functions
+    // =============================
+
+
+    function createConnection(fromId, toId) {
+
+      function lineCloseBtnClickHandler() {
+        if (typeof bubble_fn_deleteConnection === 'function') bubble_fn_deleteConnection([fromId, toId])
+      }
+      return arrowVector({
         from: {
-          node: $('#fromNode-from1').find('.handle')[0],
+          id: fromId,
           direction: DIRECTION.RIGHT,
           translation: [0.12, 0],
         },
         to: {
-          node: $('[fromnodes]').find('.handle')[0],
+          id: toId,
+          direction: DIRECTION.LEFT,
+          translation: [-0.12, 0],
+        },
+        parent: '#block-container',
+        autoUpdate: true,
+        closeButton: true,
+        closeHandler: lineCloseBtnClickHandler
+      }
+      )
+
+    }
+    function createConnectionFromList(fromList = [], toId) {
+      $('.connection-group[to=' + toId + ']').remove()
+      fromList.forEach(function (fromId) {
+        createConnection(fromId, toId)
+      })
+    }
+  </script>
+  <script>
+    $(".draggable").draggable();
+    $("#block1 .from-element").on('click', function () {
+
+      dragStartHandler('block1')
+    });
+    arrowVector(
+      {
+        from: {
+          id: 'block1',
+          direction: DIRECTION.RIGHT,
+          translation: [0.12, 0],
+        },
+        to: {
+          id: 'block3',
           direction: DIRECTION.LEFT,
           translation: [-0.12, 0],
         }, parent: '#block-container', autoUpdate: true, closeButton: true
