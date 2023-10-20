@@ -9,6 +9,21 @@
   <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
   <style>
+    #block-container {
+      position: relative;
+    }
+
+    .background-texture {
+
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2F20cb02826b917f36840900e8977ff34d.cdn.bubble.io%2Ff1696181698567x776969871987046100%2FGroup%2520512821.png?w=&h=&auto=compress&dpr=1&fit=max");
+      background-repeat: repeat;
+    }
+
     .connection-path {
       stroke: rgb(2, 8, 9);
       fill: transparent;
@@ -72,13 +87,21 @@
   </style>
 </head>
 
-<body>
-
-  <div class="h-screen w-screen p-8">
-    <div class="h-full w-full relative bg-gray-100 overflow-auto relative parent-selector" id="block-container">
+<body class="h-screen w-screen p-8 bg-gray-500">
+  <div class="fixed bottom-8 left-8 z-10 flex">
+    <button id="zoomOut"
+      class="h-10 w-10 inline-flex items-center justify-center bg-gray-100 cursor-pointer hover:bg-gray-300 transition text-4xl">-</button>
+    <button id="zoomIn"
+      class="h-10 w-10 inline-flex items-center justify-center bg-gray-100 cursor-pointer hover:bg-gray-300 transition text-4xl">+</button>
+    <button id="reset"
+      class="h-10 w-20 inline-flex items-center justify-center bg-gray-100 cursor-pointer hover:bg-gray-300 transition text-xl">Reset</button>
+  </div>
+  <div class="h-full w-full  overflow-hidden  bg-white">
+    <div class="min-h-full min-w-full  relative     relative parent-selector transform " id="block-container"
+      data-before-width="100%">
 
       <!-- Single box -->
-      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-32 top-32 z-10" id="block1">
+      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[100px] top-[100px] z-10 " id="block1">
         <h2 class="cursor-grab bg-cyan-300 px-2 py-2 text-center uppercase text-bold">
           Input
         </h2>
@@ -96,7 +119,7 @@ Hello testing 2</textarea>
       <!-- End Single box -->
 
       <!-- Single box -->
-      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[590px] top-[290px] z-10" id="block2">
+      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[600px] top-[500px] z-10" id="block2">
         <h2 class="cursor-grab bg-cyan-300 px-2 py-2 text-center uppercase text-bold">
           Middle chain
         </h2>
@@ -121,7 +144,7 @@ Hello testing 2</textarea>
       <!-- End Single box -->
 
       <!-- Single box -->
-      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[750px] top-[490px] z-10" id="block3">
+      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[800px] top-[100px] z-10" id="block3">
         <h2 class="cursor-grab bg-cyan-300 px-2 py-2 text-center uppercase text-bold">
           Middle chain
         </h2>
@@ -146,7 +169,7 @@ Hello testing 2</textarea>
       <!-- End Single box -->
 
       <!-- Single box -->
-      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[950px] top-[700px] z-10" id="block4">
+      <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[1300px] top-[500px] z-10" id="block4">
         <h2 class="cursor-grab bg-cyan-300 px-2 py-2 text-center uppercase text-bold">
           Middle chain
         </h2>
@@ -195,527 +218,772 @@ Hello testing 2</textarea>
 
       </div>
       <!-- End Single box -->
+
     </div>
-  </div>
-
-  <script>
-
-    // ==========================
-    // Plugin script
-    // ==========================
-    var w3u = 'http://www.w3.org/2000/svg';
-    var TRANSLATION_DEFAULT = 0.3
-    var DIRECTION = {
-      TOP_LEFT: 'top-left',
-      TOP: 'top',
-      TOP_RIGHT: 'top-right',
-      RIGHT: 'right',
-      BOTTOM_LEFT: 'bottom-left',
-      BOTTOM: 'bottom',
-      BOTTOM_RIGHT: 'bottom-right',
-      LEFT: 'left',
-    };
-    var svgIcon = '<svg class="connection-close-icon"  id="Layer_1"  version="1.1" viewBox="0 0 512 512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M443.6,387.1L312.4,255.4l131.5-130c5.4-5.4,5.4-14.2,0-19.6l-37.4-37.6c-2.6-2.6-6.1-4-9.8-4c-3.7,0-7.2,1.5-9.8,4  L256,197.8L124.9,68.3c-2.6-2.6-6.1-4-9.8-4c-3.7,0-7.2,1.5-9.8,4L68,105.9c-5.4,5.4-5.4,14.2,0,19.6l131.5,130L68.4,387.1  c-2.6,2.6-4.1,6.1-4.1,9.8c0,3.7,1.4,7.2,4.1,9.8l37.4,37.6c2.7,2.7,6.2,4.1,9.8,4.1c3.5,0,7.1-1.3,9.8-4.1L256,313.1l130.7,131.1  c2.7,2.7,6.2,4.1,9.8,4.1c3.5,0,7.1-1.3,9.8-4.1l37.4-37.6c2.6-2.6,4.1-6.1,4.1-9.8C447.7,393.2,446.2,389.7,443.6,387.1z"/></svg>'
-
-    function pointBezier(point, containerVisibleSize) {
-      return {
-        x: point.x + containerVisibleSize.width * point.translation[0],
-        y: point.y + containerVisibleSize.height * point.translation[1],
-      }
-    } // end pointBezier
-
-
-
-
-
-    function nodeValue(node) {
-      var nodeSelected = node
-      if (typeof node === 'function') {
-        nodeSelected = node()
-      }
-
-
-      if (!document.body.contains(nodeSelected)) return null;
-
-      return nodeSelected;
-    }; // end nodeValue
-
-    function getAnchorPoint(anchor, svg) {
-      var node = nodeValue(anchor.node);
-      if (!node && (!anchor.x || !anchor.y)) {
-        console.log(anchor);
-        throw new Error("point is null, check if 'from'/'to' exists")
+    <!-- <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script> -->
+    <script src='https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js'></script>
+    <script>
+      var click = {
+        x: 0,
+        y: 0
       };
 
-      var x, y;
-      var svgRect = $(svg).offset()
+      $('.draggable').draggable()
 
-      if (anchor.x && anchor.y) {
-        x = anchor.x - svgRect.left;
-        y = anchor.y - svgRect.top
+      $('.draggable').on('dragstart', function (e) {
 
-        return { x, y }
+
+        click.x = e.clientX;
+        click.y = e.clientY;
+      })
+
+      $('.draggable').on('drag', function (event, ui) {
+        var targetElement = $(ui.helper[0])[0];
+        var zoom = ui.helper[0].getBoundingClientRect().width / ui.helper[0].offsetWidth;
+
+        var original = ui.originalPosition;
+
+        // jQuery will simply use the same object we alter here
+        ui.position = {
+          left: (event.clientX - click.x + original.left) / zoom,
+          top: (event.clientY - click.y + original.top) / zoom
+        };
+      })
+      const elem = document.getElementById('block-container')
+      // const elem = document.getElementById('block1')
+      var panzoomInstance = panzoom(elem, {
+
+        zoomSpeed: 0.045, // 6.5% per mouse wheel event
+        transformOrigin: { x: 0.5, y: 0.5 },
+        maxZoom: 1.5,
+        minZoom: 0.5,
+        beforeMouseDown: function (e) {
+
+          // allow mouse-down panning only if altKey is down. Otherwise - ignore
+          var shouldIgnore = !!$(e.target).closest('.draggable')[0];
+          return shouldIgnore;
+        }
+      })
+      $(elem).prepend($('<span>').addClass('background-texture'));
+
+      panzoomInstance.on('transform', function (e) {
+        // This event will be called along with events above.
+        var transform = e.getTransform()
+        var width = elem.scrollWidth / transform.scale
+        var height = elem.scrollHeight / transform.scale
+        $('.background-texture').css({ width: width, height: height, left: -(transform.x / transform.scale), top: -(transform.y / transform.scale) })
+
+      });
+
+      function getTransformOriginOffset() {
+        var ownerRect = elem.getBoundingClientRect();
+        let transformOrigin = panzoomInstance.getTransformOrigin();
+        var x = ownerRect.width * transformOrigin.x
+        var y = ownerRect.height * transformOrigin.y
+        return {
+          x: ownerRect.width * transformOrigin.x, y: ownerRect.height * transformOrigin.y
+        }
+      }
+      function panZoomIn() {
+        var offset = getTransformOriginOffset()
+
+        panzoomInstance.smoothZoom(offset.x, offset.y, 1.1);
+      }
+      function panZoomOut() {
+        var offset = getTransformOriginOffset();
+        panzoomInstance.smoothZoom(offset.x, offset.y, 0.9)
+      }
+      function panReset() {
+        panzoomInstance.moveTo(0, 0, 1);
+        panzoomInstance.zoomAbs(0, 0, 1);
       }
 
 
 
-      var rect = node.getBoundingClientRect();
-      x = rect.x - svgRect.left;
-      y = rect.y - svgRect.top;
+      $('#zoomOut').on('click', panZoomOut)
+      $('#zoomIn').on('click', panZoomIn)
+      $('#reset').on('click', panReset)
+
+    </script>
 
 
 
+    <script>
 
-
-      switch (anchor.direction) {
-        case DIRECTION.TOP_LEFT:
-          return { x, y };
-        case DIRECTION.TOP:
-          return {
-            x: x + rect.width / 2,
-            y: y,
-          };
-        case DIRECTION.TOP_RIGHT:
-          return {
-            x: x + rect.width,
-            y: y,
-          };
-        case DIRECTION.RIGHT:
-          return {
-            x: x + rect.width,
-            y: y + rect.height / 2,
-          };
-        case DIRECTION.BOTTOM_LEFT:
-          return {
-            x,
-            y: y + rect.height,
-          };
-        case DIRECTION.BOTTOM:
-          return {
-            x: x + rect.width / 2,
-            y: y + rect.height,
-          };
-        case DIRECTION.BOTTOM_RIGHT:
-          return {
-            x: x + rect.width,
-            y: y + rect.height,
-          };
-        case DIRECTION.LEFT:
-          return {
-            x,
-            y: y + rect.height / 2,
-          };
-        default:
-          return {
-            x: x + rect.width / 2,
-            y: y + rect.height / 2,
-          }
-      }
-    }; // end getAnchorPoint
-
-    function castToAnchor(anchorParam) {
-      if (typeof anchorParam === 'function' || anchorParam instanceof HTMLElement) return {
-        node: anchorParam,
-      }
-
-      return anchorParam
-    } // end castToAnchor
-
-    function createAnchorWithPoint(
-      anchorParam, svg
-    ) {
-      var anchor = castToAnchor(anchorParam)
-      var position = getAnchorPoint(anchor, svg);
-
-      return {
-        ...anchor,
-        ...position,
+      // ==========================
+      // Plugin script
+      // ==========================
+      var w3u = 'http://www.w3.org/2000/svg';
+      var TRANSLATION_DEFAULT = 0.3
+      var DIRECTION = {
+        TOP_LEFT: 'top-left',
+        TOP: 'top',
+        TOP_RIGHT: 'top-right',
+        RIGHT: 'right',
+        BOTTOM_LEFT: 'bottom-left',
+        BOTTOM: 'bottom',
+        BOTTOM_RIGHT: 'bottom-right',
+        LEFT: 'left',
       };
-    }; // end createAnchorWithPoint
+      var svgIcon = '<svg class="connection-close-icon"  id="Layer_1"  version="1.1" viewBox="0 0 512 512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M443.6,387.1L312.4,255.4l131.5-130c5.4-5.4,5.4-14.2,0-19.6l-37.4-37.6c-2.6-2.6-6.1-4-9.8-4c-3.7,0-7.2,1.5-9.8,4  L256,197.8L124.9,68.3c-2.6-2.6-6.1-4-9.8-4c-3.7,0-7.2,1.5-9.8,4L68,105.9c-5.4,5.4-5.4,14.2,0,19.6l131.5,130L68.4,387.1  c-2.6,2.6-4.1,6.1-4.1,9.8c0,3.7,1.4,7.2,4.1,9.8l37.4,37.6c2.7,2.7,6.2,4.1,9.8,4.1c3.5,0,7.1-1.3,9.8-4.1L256,313.1l130.7,131.1  c2.7,2.7,6.2,4.1,9.8,4.1c3.5,0,7.1-1.3,9.8-4.1l37.4-37.6c2.6-2.6,4.1-6.1,4.1-9.8C447.7,393.2,446.2,389.7,443.6,387.1z"/></svg>'
+
+      function pointBezier(point, containerVisibleSize) {
+        // console.log(point, containerVisibleSize.width, point.translation[0]);
+        return {
+          x: point.x + containerVisibleSize.width * point.translation[0],
+          y: point.y + containerVisibleSize.height * point.translation[1],
+        }
+      } // end pointBezier
+
+
+      function nodeValue(node) {
+        var nodeSelected = node
+        if (typeof node === 'function') {
+          nodeSelected = node()
+        }
+
+
+        if (!document.body.contains(nodeSelected)) return null;
+
+        return nodeSelected;
+      }; // end nodeValue
+
+      function getAnchorPoint(anchor, svg) {
+        // console.log(svg);
+        var node = nodeValue(anchor.node);
+        if (!node && (!anchor.x || !anchor.y)) {
+
+          throw new Error("point is null, check if 'from'/'to' exists")
+        };
+
+        var x, y;
+        var svgRect = svg.getBoundingClientRect()
+        // Get current scale
+        var containerElement = svg.parentElement;
+        var scaleValue = containerElement.getBoundingClientRect().width / containerElement.offsetWidth
+
+        if (anchor.x && anchor.y) {
+          x = (anchor.x - svgRect.x) / scaleValue;
+          y = (anchor.y - svgRect.y) / scaleValue
+
+          return { x, y }
+        }
 
 
 
+        var rect = node.getBoundingClientRect();
 
-    function autoAnchorWithPoint(pointA, pointB, svg) {
-      if (pointA.translation && pointA.direction) return pointA
+        x = (rect.x - svgRect.x) / scaleValue;
+        y = (rect.y - svgRect.y) / scaleValue;
 
-      var autoAnchor = { ...pointA };
-
-      var setDirectionWhenEmpty = (direction) => {
-        if (!autoAnchor.direction) autoAnchor.direction = direction;
-      }
-
-      var setTranslationWhenEmpty = (translation) => {
-        if (!autoAnchor.translation) autoAnchor.translation = translation;
-      }
-
-      var setParamsWhenEmpty = (direction, translation) => {
-        setDirectionWhenEmpty(direction);
-        setTranslationWhenEmpty(translation);
-      }
-
-      var xDiff = Math.abs(pointA.x - pointB.x);
-      var yDiff = Math.abs(pointA.y - pointB.y);
-
-      if (xDiff > yDiff) {
-        if (pointA.x < pointB.x) setParamsWhenEmpty(DIRECTION.RIGHT, [TRANSLATION_DEFAULT, 0])
-        else setParamsWhenEmpty(DIRECTION.LEFT, [-TRANSLATION_DEFAULT, 0])
-      } else {
-        if (pointA.y < pointB.y) setParamsWhenEmpty(DIRECTION.BOTTOM, [0, TRANSLATION_DEFAULT])
-        else setParamsWhenEmpty(DIRECTION.TOP, [0, -TRANSLATION_DEFAULT])
-      }
-
-      return createAnchorWithPoint(autoAnchor, svg)
-    } // end autoAnchorWithPoint
+        var nodeWidth = rect.width / scaleValue;
+        var nodeHeight = rect.height / scaleValue;
 
 
 
-    function containerSize(relativeFrom, relativeTo) {
-      return {
-        width: Math.max(relativeFrom.x, relativeTo.x),
-        height: Math.max(relativeFrom.y, relativeTo.y),
-      }
-    }; // end containerSize
-
-
-    function pointToArray(point) {
-      return [
-        point.x,
-        point.y,
-      ]
-    }; // end pointToArray
-
-    function convertPathToSVG(path) {
-      var list = ['M'];
-      list.push(pointToArray(path[0]));
-      list.push('C');
-      list.push(pointToArray(path[1]));
-      list.push(',');
-      list.push(pointToArray(path[2]));
-      list.push(',');
-      list.push(pointToArray(path[3]));
-      return list.flat().join(' ').replace(/ ,/g, ',');
-    }; // convertPathToSVG
-
-
-
-
-
-
-    function pathListBezier(
-      container,
-
-    ) {
-      var path = [];
-
-      path.push(container.relativeFrom);
-      path.push(pointBezier(container.relativeFrom, container.size));
-      path.push(pointBezier(container.relativeTo, container.size));
-      path.push(container.relativeTo);
-      return path;
-    }; //end pathListBezier 
-
-    function createPaths(from, to, svg) {
-      var fromAnchor = createAnchorWithPoint(from, svg);
-      var toAnchor = createAnchorWithPoint(to, svg);
-
-      var relativeFrom = autoAnchorWithPoint(fromAnchor, toAnchor, svg)
-      var relativeTo = autoAnchorWithPoint(toAnchor, fromAnchor, svg)
-
-      var position = {
-        x: Math.min(relativeFrom.x, relativeTo.x),
-        y: Math.min(relativeFrom.y, relativeTo.y),
-      };
-
-      var size = containerSize(relativeFrom, relativeTo);
-
-      var path = pathListBezier({ position, size, relativeFrom, relativeTo });
-      return { path: convertPathToSVG(path), position: position, size: size };
-    } // end createPaths
-
-    function getSvgEl(parrent = 'body') {
-      var svg = $(parrent + ' #connection-svg')[0];
-      if (!svg) {
-        var svgParentEl = $(parrent)[0]
-
-        svg = $(document.createElementNS(w3u, 'svg')).attr('id', 'connection-svg').css({ width: svgParentEl.scrollWidth, height: svgParentEl.scrollHeight, left: 0, top: 0, position: 'absolute' }).appendTo(svgParentEl)[0]
-
-
-        $(svgParentEl).on('scroll', function () {
-          $(svg).css({ width: this.scrollWidth, height: this.scrollHeight })
-
-        })
-        $(window).on('resize', function () {
-          $(svg).css({ width: svgParentEl.scrollWidth, height: svgParentEl.scrollHeight })
-
-        })
-
-      }
-      return svg
-    } // End getSvgEl
-
-    function createElements(svg, pathCommands, closeBtn = true) {
-      var groupElement = $(document.createElementNS(w3u, 'g')).addClass('connection-group').appendTo(svg)
-      var pathEl = $(document.createElementNS(w3u, 'path')).addClass('connection-path').attr({ 'd': pathCommands.path, }).appendTo(groupElement)[0]
-
-
-
-      // btn
-      var $btn
-      if (closeBtn) {
-        var foreignObject = $(document.createElementNS(w3u, 'foreignObject')).appendTo(groupElement)
-        $btn = $('<button>').addClass('connection-close-btn').html(svgIcon).appendTo(foreignObject)
-        var buttonSize = '20'
-        foreignObject.css({ height: buttonSize, width: buttonSize })
-
-        $(groupElement).hover(function () {
-          var rect = pathEl.getBoundingClientRect()
-          var svgRect = svg.getBoundingClientRect()
-          var buttonSize = '20'
-          foreignObject.attr({ x: ((rect.width / 2) + rect.x - buttonSize / 2) - svgRect.x, y: (rect.height / 2 + rect.y - buttonSize / 2) - svgRect.y })
-        })
-      }
-
-
-      return { groupElement: groupElement, pathEl: pathEl, btn: $btn }
-    } // create elements
-
-
-    function arrowVector(
-      options
-    ) {
-
-      var from = options.from;
-      var fromId = from.id
-      if (fromId) {
-        from.node = $('#' + fromId).find('.from-element')[0]
-      }
-      var to = options.to;
-      var toId = to.id
-      if (toId) {
-        to.node = $('#' + toId).find('.to-element')[0]
-      }
-      var autoUpdate = options.autoUpdate;
-      var closeHandler = options.closeHandler;
-      var pathClass = options.pathClass || '';
-      var svg = getSvgEl(options.parent)
-
-
-      var pathCommands = createPaths(from, to, svg)
-      var elements = createElements(svg, pathCommands, options.closeButton)
-      var groupElement = elements.groupElement
-      $(groupElement).attr({ from: fromId, to: toId })
-      var pathEl = elements.pathEl
-      $(pathEl).addClass(pathClass)
-      var $btn = elements.btn
-      var intervalId;
-
-      if (autoUpdate) {
-        intervalId = setInterval(function () {
-          if (groupElement[0].isConnected) {
-            var updatedPathCommands = createPaths(from, to, svg)
-
-            // Only update when path is changed
-            if (pathCommands.path !== updatedPathCommands.path) {
-
-              $(pathEl).attr('d', updatedPathCommands.path)
+        switch (anchor.direction) {
+          case DIRECTION.TOP_LEFT:
+            return { x, y };
+          case DIRECTION.TOP:
+            return {
+              x: x + nodeWidth / 2,
+              y: y,
+            };
+          case DIRECTION.TOP_RIGHT:
+            return {
+              x: x + nodeWidth,
+              y: y,
+            };
+          case DIRECTION.RIGHT:
+            return {
+              x: x + nodeWidth,
+              y: y + nodeHeight / 2,
+            };
+          case DIRECTION.BOTTOM_LEFT:
+            return {
+              x,
+              y: y + nodeHeight,
+            };
+          case DIRECTION.BOTTOM:
+            return {
+              x: x + nodeWidth / 2,
+              y: y + nodeHeight,
+            };
+          case DIRECTION.BOTTOM_RIGHT:
+            return {
+              x: x + nodeWidth,
+              y: y + nodeHeight,
+            };
+          case DIRECTION.LEFT:
+            return {
+              x,
+              y: y + nodeHeight / 2,
+            };
+          default:
+            return {
+              x: x + rect.width / 2,
+              y: y + nodeHeight / 2,
             }
-            return;
+        }
+      }; // end getAnchorPoint
+
+      function castToAnchor(anchorParam) {
+        if (typeof anchorParam === 'function' || anchorParam instanceof HTMLElement) return {
+          node: anchorParam,
+        }
+
+        return anchorParam
+      } // end castToAnchor
+
+      function createAnchorWithPoint(
+        anchorParam, svg
+      ) {
+        var anchor = castToAnchor(anchorParam)
+        var position = getAnchorPoint(anchor, svg);
+
+        return {
+          ...anchor,
+          ...position,
+        };
+      }; // end createAnchorWithPoint
+
+
+
+
+      function autoAnchorWithPoint(pointA, pointB, svg) {
+        if (pointA.translation && pointA.direction) return pointA
+
+        var autoAnchor = { ...pointA };
+
+        var setDirectionWhenEmpty = (direction) => {
+          if (!autoAnchor.direction) autoAnchor.direction = direction;
+        }
+
+        var setTranslationWhenEmpty = (translation) => {
+          if (!autoAnchor.translation) autoAnchor.translation = translation;
+        }
+
+        var setParamsWhenEmpty = (direction, translation) => {
+          setDirectionWhenEmpty(direction);
+          setTranslationWhenEmpty(translation);
+        }
+
+        var xDiff = Math.abs(pointA.x - pointB.x);
+        var yDiff = Math.abs(pointA.y - pointB.y);
+
+        if (xDiff > yDiff) {
+          if (pointA.x < pointB.x) setParamsWhenEmpty(DIRECTION.RIGHT, [TRANSLATION_DEFAULT, 0])
+          else setParamsWhenEmpty(DIRECTION.LEFT, [-TRANSLATION_DEFAULT, 0])
+        } else {
+          if (pointA.y < pointB.y) setParamsWhenEmpty(DIRECTION.BOTTOM, [0, TRANSLATION_DEFAULT])
+          else setParamsWhenEmpty(DIRECTION.TOP, [0, -TRANSLATION_DEFAULT])
+        }
+
+        return createAnchorWithPoint(autoAnchor, svg)
+      } // end autoAnchorWithPoint
+
+
+
+      function containerSize(relativeFrom, relativeTo) {
+
+        return {
+          width: Math.abs(relativeFrom.x - relativeTo.x),
+          height: Math.abs(relativeFrom.y - relativeTo.y),
+        }
+      }; // end containerSize
+
+
+      function pointToArray(point) {
+        return [
+          point.x,
+          point.y,
+        ]
+      }; // end pointToArray
+
+      function convertPathToSVG(path) {
+        var list = ['M'];
+        list.push(pointToArray(path[0]));
+        list.push('C');
+        list.push(pointToArray(path[1]));
+        list.push(',');
+        list.push(pointToArray(path[2]));
+        list.push(',');
+        list.push(pointToArray(path[3]));
+        return list.flat().join(' ').replace(/ ,/g, ',');
+      }; // convertPathToSVG
+
+
+
+
+
+
+      function pathListBezier(
+        container,
+
+      ) {
+        var path = [];
+
+        path.push(container.relativeFrom);
+        path.push(pointBezier(container.relativeFrom, container.size));
+        path.push(pointBezier(container.relativeTo, container.size));
+        path.push(container.relativeTo);
+
+        return path;
+      }; //end pathListBezier 
+
+      function createPaths(from, to, svg) {
+        var fromAnchor = createAnchorWithPoint(from, svg);
+        var toAnchor = createAnchorWithPoint(to, svg);
+
+        var relativeFrom = autoAnchorWithPoint(fromAnchor, toAnchor, svg)
+        var relativeTo = autoAnchorWithPoint(toAnchor, fromAnchor, svg)
+
+        var position = {
+          x: Math.min(relativeFrom.x, relativeTo.x),
+          y: Math.min(relativeFrom.y, relativeTo.y),
+        };
+
+        var size = containerSize(relativeFrom, relativeTo);
+
+        var path = pathListBezier({ position, size, relativeFrom, relativeTo });
+        return { path: convertPathToSVG(path), position: position, size: size };
+      } // end createPaths
+
+      function getSvgEl(parrent = 'body') {
+        var svg = $(parrent + ' #connection-svg')[0];
+        if (!svg) {
+          var svgParentEl = $(parrent)[0]
+
+          svg = $(document.createElementNS(w3u, 'svg')).attr('id', 'connection-svg').css({ width: svgParentEl.scrollWidth, height: svgParentEl.scrollHeight, left: 0, top: 0, position: 'absolute', overflow: 'visible' }).appendTo(svgParentEl)[0]
+
+
+          $(svgParentEl).on('scroll', function () {
+            $(svg).css({ width: this.scrollWidth, height: this.scrollHeight })
+
+          })
+          $(window).on('resize', function () {
+            $(svg).css({ width: svgParentEl.scrollWidth, height: svgParentEl.scrollHeight })
+
+          })
+
+        }
+        return svg
+      } // End getSvgEl
+
+      function createElements(svg, pathCommands, closeBtn = true) {
+        var groupElement = $(document.createElementNS(w3u, 'g')).addClass('connection-group').appendTo(svg)
+        var pathEl = $(document.createElementNS(w3u, 'path')).addClass('connection-path').attr({ 'd': pathCommands.path, }).appendTo(groupElement)[0]
+
+
+
+        // btn
+        var $btn
+        if (closeBtn) {
+          var foreignObject = $(document.createElementNS(w3u, 'foreignObject')).appendTo(groupElement)
+          $btn = $('<button>').addClass('connection-close-btn').html(svgIcon).appendTo(foreignObject)
+          var buttonSize = '20'
+          foreignObject.css({ height: buttonSize, width: buttonSize })
+
+          $(groupElement).hover(function () {
+            var containerElement = svg.parentElement;
+            var scaleValue = containerElement.getBoundingClientRect().width / containerElement.offsetWidth
+            var pathRect = pathEl.getBoundingClientRect()
+            var svgRect = svg.getBoundingClientRect()
+            var buttonWidth = $($btn).width();
+            var buttonHeight = $($btn).height();
+            var pathX = pathRect.x / scaleValue;
+            var pathY = pathRect.y / scaleValue;
+            var pathWidth = pathRect.width / scaleValue;
+            var pathHeight = pathRect.height / scaleValue;
+            foreignObject.attr({ x: (((pathWidth / 2) + pathX - buttonWidth / 2) - svgRect.x / scaleValue), y: (pathHeight / 2 + pathY - buttonHeight / 2) - svgRect.y / scaleValue })
+
+          })
+        }
+
+
+        return { groupElement: groupElement, pathEl: pathEl, btn: $btn }
+      } // create elements
+
+
+      function arrowVector(
+        options
+      ) {
+
+        var from = options.from;
+        var fromId = from.id
+        if (fromId) {
+          from.node = $('#' + fromId).find('.from-element')[0]
+        }
+        var to = options.to;
+        var toId = to.id
+        if (toId) {
+          to.node = $('#' + toId).find('.to-element')[0]
+        }
+        var autoUpdate = options.autoUpdate;
+        var closeHandler = options.closeHandler;
+        var pathClass = options.pathClass || '';
+        var svg = getSvgEl(options.parent)
+
+
+        var pathCommands = createPaths(from, to, svg)
+        var elements = createElements(svg, pathCommands, options.closeButton)
+        var groupElement = elements.groupElement
+        $(groupElement).attr({ from: fromId, to: toId })
+        var pathEl = elements.pathEl
+        $(pathEl).addClass(pathClass)
+        var $btn = elements.btn
+        var intervalId;
+
+        if (autoUpdate) {
+          intervalId = setInterval(function () {
+            if (groupElement[0].isConnected) {
+              var updatedPathCommands = createPaths(from, to, svg)
+
+              // Only update when path is changed
+              if (pathCommands.path !== updatedPathCommands.path) {
+
+                $(pathEl).attr('d', updatedPathCommands.path)
+              }
+              return;
+            }
+            clearInterval(intervalId)
+          }, 0)
+        }
+
+        function updateHandler(options) {
+          if (options.form) {
+            from = options.form
           }
+          if (options.to) {
+            to = options.to
+          }
+          var updatedPathCommands = createPaths(from, to, svg)
+          $(pathEl).attr('d', updatedPathCommands.path)
+        }
+
+
+        $(groupElement).on('click', function (e) {
+          e.stopPropagation()
+          $('.connection-group').removeClass('active')
+          $(this).addClass('active')
+        })
+
+
+
+
+        function remove() {
+
+
+          groupElement.remove()
           clearInterval(intervalId)
-        }, 0)
-      }
-
-      function updateHandler(options) {
-        if (options.form) {
-          from = options.form
         }
-        if (options.to) {
-          to = options.to
+
+
+        if ($btn) {
+          $($btn).on('click', function () {
+            if (typeof closeHandler === "function") { closeHandler(from, to) }
+            remove()
+
+          })
         }
-        var updatedPathCommands = createPaths(from, to, svg)
-        $(pathEl).attr('d', updatedPathCommands.path)
-      }
+
+        return { update: updateHandler, remove: remove }
 
 
-      $(groupElement).on('click', function (e) {
-        e.stopPropagation()
+      };
+      function outsideGroupClickHandler(e) {
         $('.connection-group').removeClass('active')
-        $(this).addClass('active')
-      })
+      }
+      $(document).on('click', outsideGroupClickHandler)
+    </script>
 
+    <script>
 
+      // =============================
+      // Start drag functions 
+      // =============================
+      var dragFromBlock = null
+      var dragLine = null;
+      var mousePosition = { x: 0, y: 0 }
 
-
-      function remove() {
-
-
-        groupElement.remove()
-        clearInterval(intervalId)
+      function dragLineRemoveHandler() {
+        if (dragFromBlock && dragLine && dragLine.remove) {
+          dragLine.remove()
+          dragLine = null;
+          dragFromBlock = null;
+        }
       }
 
+      function dragStartHandler(dragFromId) {
+        setTimeout(function () {
 
-      if ($btn) {
-        $($btn).on('click', function () {
-          if (typeof closeHandler === "function") { closeHandler(from, to) }
-          remove()
+          // First remove old dragline 
+          dragLineRemoveHandler()
+          dragFromBlock = $('#' + dragFromId);
+          dragLine = arrowVector(
+            {
+              from: {
+                id: dragFromId,
+                direction: DIRECTION.RIGHT,
+                translation: [0.5, 0],
+              },
+              to: {
 
+                x: mousePosition.x,
+                y: mousePosition.y,
+                direction: DIRECTION.LEFT,
+                translation: [-0.5, 0],
+              }, parent: '#block-container', closeButton: false, pathClass: 'drawLine'
+            }
+          )
         })
       }
 
-      return { update: updateHandler, remove: remove }
-
-
-    };
-    function outsideGroupClickHandler(e) {
-      $('.connection-group').removeClass('active')
-    }
-    $(document).on('click', outsideGroupClickHandler)
-  </script>
-
-  <script>
-
-    // =============================
-    // Start drag functions 
-    // =============================
-    var dragFromBlock = null
-    var dragLine = null;
-    var mousePosition = { x: 0, y: 0 }
-
-    function dragLineRemoveHandler() {
-      if (dragFromBlock && dragLine && dragLine.remove) {
-        dragLine.remove()
-        dragLine = null;
-        dragFromBlock = null;
-      }
-    }
-
-    function dragStartHandler(dragFromId) {
-      setTimeout(function () {
-
-        // First remove old dragline 
-        dragLineRemoveHandler()
-        dragFromBlock = $('#' + dragFromId);
-        dragLine = arrowVector(
-          {
-            from: {
-              id: dragFromId,
-              direction: DIRECTION.RIGHT,
-              translation: [0.04, 0],
-            },
+      // Update the dragline
+      $(document).on('mousemove', function (e) {
+        if (dragLine && dragLine.update) {
+          dragLine.update({
             to: {
+              x: e.clientX, y: e.clientY, direction: DIRECTION.LEFT,
+              translation: [-0.5, 0],
+            }
+          })
 
-              x: mousePosition.x,
-              y: mousePosition.y,
-              direction: DIRECTION.LEFT,
-              translation: [-0.04, 0],
-            }, parent: '#block-container', closeButton: false, pathClass: 'drawLine'
-          }
-        )
+        }
       })
-    }
 
-    // Update the dragline
-    $(document).on('mousemove', function (e) {
-      if (dragLine && dragLine.update) {
-        dragLine.update({
+      // Remove dragline when click in the document
+      $(document).on('click', function (e) {
+        mousePosition = { x: e.clientX, y: e.clientY }
+        if (dragFromBlock && $(dragFromBlock)[0].contains(e.target)) return
+        if (dragLine && dragLine.remove) {
+
+
+          dragLine.remove()
+          dragLine = null
+          dragFromBlock = null
+        }
+      })
+      // End drag functions
+
+
+
+      // =============================
+      // Start create connection  functions
+      // =============================
+
+
+      function createConnection(fromId, toId) {
+
+        function lineCloseBtnClickHandler() {
+          if (typeof bubble_fn_deleteConnection === 'function') bubble_fn_deleteConnection([fromId, toId])
+        }
+        return arrowVector({
+          from: {
+            id: fromId,
+            direction: DIRECTION.RIGHT,
+            translation: [0.5, 0],
+          },
           to: {
-            x: e.clientX, y: e.clientY, direction: DIRECTION.LEFT,
-            translation: [-0.03, 0],
+            id: toId,
+            direction: DIRECTION.LEFT,
+            translation: [-0.5, 0],
+          },
+          parent: '#block-container',
+          autoUpdate: true,
+          closeButton: true,
+          closeHandler: lineCloseBtnClickHandler
+        }
+        )
+
+      }
+
+      function createConnectionFromList(fromList = [], toId) {
+        $('.connection-group[to=' + toId + ']').remove()
+        fromList.forEach(function (fromId) {
+          createConnection(fromId, toId)
+        })
+      }
+
+      // =============================
+      // Delete Block connections
+      // =============================
+
+      function deleteBlockConnections(blockId) {
+        $('.connection-group[from=' + blockId + '],.connection-group[to=' + blockId + ']').remove()
+      }
+    </script>
+
+    <!-- <script>
+
+
+
+      document.addEventListener("DOMContentLoaded", function () {
+
+        window.attachDraggableEvents = function () {
+          var click = {
+            x: 0,
+            y: 0
+          };
+
+          function dragStartHandler(event) {
+
+            click.x = event.clientX;
+            click.y = event.clientY;
           }
+
+          function dragHandler(event, ui) {
+
+            console.log(event)
+            console.clear()
+            var targetElement = $(ui.helper[0])[0];
+            var zoom = ui.helper[0].getBoundingClientRect().width / ui.helper[0].offsetWidth;
+
+            var original = ui.originalPosition;
+
+            // jQuery will simply use the same object we alter here
+            ui.position = {
+              left: (event.clientX - click.x + original.left) / zoom,
+              top: (event.clientY - click.y + original.top) / zoom
+            };
+
+          }
+
+          // First remove old addEventListeners
+          $('.movable').off('dragstart', dragStartHandler)
+          $('.movable').off('drag', dragHandler)
+
+
+          // Then add   addEventListeners
+          $('.movable').on('dragstart', dragStartHandler)
+          $('.movable').on('drag', dragHandler)
+
+
+        } //attachDraggableEvents
+
+        // observe moveable block-container and attach drag event
+        var draggableElementObserver = new MutationObserver(function mCallback(mutations, ob) {
+          attachDraggableEvents()
         })
 
-      }
-    })
 
-    // Remove dragline when click in the document
-    $(document).on('click', function (e) {
-      mousePosition = { x: e.clientX, y: e.clientY }
-      if (dragFromBlock && $(dragFromBlock)[0].contains(e.target)) return
-      if (dragLine && dragLine.remove) {
+        // Attach zoom and pan to the editor container
+        var blockContainerObserver = new MutationObserver(function mCallback(mutations, ob) {
 
-
-        dragLine.remove()
-        dragLine = null
-        dragFromBlock = null
-      }
-    })
-    // End drag functions
+          for (let mutation of mutations) {
+            if (mutation.type === 'childList') {
 
 
 
-    // =============================
-    // Start create connection  functions
-    // =============================
+              var container = $('#block-container')[0];
+
+              if (container) {
+
+                window.panzoomInstance = panzoom(container, {
+                  zoomSpeed: 0.045, // 6.5% per mouse wheel event
+                  transformOrigin: { x: 0.5, y: 0.5 },
+                  maxZoom: 1.5,
+                  minZoom: 0.5,
+                  beforeMouseDown: function (e) {
+                    // Moveable component mouse down should ignore
+                    var shouldIgnore = !!$(e.target).closest('.movable')[0];
+                    return shouldIgnore;
+                  }
+                });
 
 
-    function createConnection(fromId, toId) {
+                // If there is no existing background-texture element
+                if ($('.background-texture').length === 0) {
+                  $(container).prepend($('<span>').addClass('background-texture'));
+                }
 
-      function lineCloseBtnClickHandler() {
-        if (typeof bubble_fn_deleteConnection === 'function') bubble_fn_deleteConnection([fromId, toId])
-      }
-      return arrowVector({
-        from: {
-          id: fromId,
-          direction: DIRECTION.RIGHT,
-          translation: [0.12, 0],
-        },
-        to: {
-          id: toId,
-          direction: DIRECTION.LEFT,
-          translation: [-0.12, 0],
-        },
-        parent: '#block-container',
-        autoUpdate: true,
-        closeButton: true,
-        closeHandler: lineCloseBtnClickHandler
-      }
-      )
+                // resize background-texture according to transform
+                panzoomInstance.on('transform', function (e) {
 
-    }
+                  // This event will be called along with events above.
+                  var transform = e.getTransform()
+                  var width = container.scrollWidth / transform.scale
+                  var height = container.scrollHeight / transform.scale
+                  $('.background-texture').css({ width: width, height: height, left: -(transform.x / transform.scale), top: -(transform.y / transform.scale) })
 
-    function createConnectionFromList(fromList = [], toId) {
-      $('.connection-group[to=' + toId + ']').remove()
-      fromList.forEach(function (fromId) {
-        createConnection(fromId, toId)
+                });
+
+
+                // Get transform origin offset
+                window.getTransformOriginOffset = function () {
+                  var ownerRect = container.getBoundingClientRect();
+                  let transformOrigin = panzoomInstance.getTransformOrigin();
+                  var x = ownerRect.width * transformOrigin.x
+                  var y = ownerRect.height * transformOrigin.y
+                  return {
+                    x: ownerRect.width * transformOrigin.x, y: ownerRect.height * transformOrigin.y
+                  }
+                }
+
+                // Pan zoom in handler
+                window.panZoomIn = function () {
+                  var offset = getTransformOriginOffset()
+
+                  panzoomInstance.smoothZoom(offset.x, offset.y, 1.1);
+                }
+                // Pan zoom out handler
+                window.panZoomOut = function () {
+                  var offset = getTransformOriginOffset();
+                  panzoomInstance.smoothZoom(offset.x, offset.y, 0.9)
+                }
+
+                // Pan reset handler
+                window.panReset = function () {
+                  panzoomInstance.moveTo(0, 0, 1);
+                  panzoomInstance.zoomAbs(0, 0, 1);
+                }
+                ob.disconnect()
+
+                // Add observe  for drag able element
+                draggableElementObserver.observe(container, {
+                  childList: true, subtree: false,
+                });
+                // Attach drag events currently mounted elements
+                attachDraggableEvents()
+              };
+            }
+
+          }
+        });
+
+
+
+        // blockContainerObserver.observe(document.body, {
+        //   childList: true, subtree: false,
+        // });
       })
-    }
+    </script> -->
+    <script>
 
-    // =============================
-    // Delete Block connections
-    // =============================
+      $("#fromNode-from1").on('click', function () {
 
-    function deleteBlockConnections(blockId) {
-      $('.connection-group[from=' + blockId + '],.connection-group[to=' + blockId + ']').remove()
-    }
-  </script>
+        dragStartHandler('block1')
+      });
+      createConnection('block1', 'block2')
+      createConnection('block3', 'block4')
+      createConnection('block1', 'block2')
 
-  <script>
-    $(".draggable").draggable();
-    $("#fromNode-from1").on('click', function () {
+      // arrowVector(
+      //   {
+      //     from: {
+      //       id: 'block1',
+      //       direction: DIRECTION.RIGHT,
+      //       translation: [1, 0],
+      //     },
+      //     to: {
+      //       id: 'block2',
+      //       direction: DIRECTION.LEFT,
+      //       translation: [-1, 0],
+      //     }, parent: '#block-container', autoUpdate: false, closeButton: true
+      //   }
+      // )
 
-      dragStartHandler('block1')
-    });
-    createConnection('block1', 'block2')
-    createConnection('block3', 'block4')
-    // createConnection('block1', 'block2')
-
-    // arrowVector(
-    //   {
-    //     from: {
-    //       id: 'block1',
-    //       direction: DIRECTION.RIGHT,
-    //       translation: [0.03, 0],
-    //     },
-    //     to: {
-    //       id: 'block3',
-    //       direction: DIRECTION.LEFT,
-    //       translation: [-0.03, 0],
-    //     }, parent: '#block-container', autoUpdate: true, closeButton: true
-    //   }
-    // )
-
-  </script>
+    </script>
 </body>
 
 </html>
