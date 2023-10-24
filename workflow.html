@@ -87,7 +87,7 @@
   </style>
 </head>
 
-<body class="h-screen w-screen p-8 bg-gray-500">
+<body class="h-screen w-screen p-8 bg-gray-300">
   <div class="fixed bottom-8 left-8 z-10 flex">
     <button id="zoomOut"
       class="h-10 w-10 inline-flex items-center justify-center bg-gray-100 cursor-pointer hover:bg-gray-300 transition text-4xl">-</button>
@@ -96,9 +96,10 @@
     <button id="reset"
       class="h-10 w-20 inline-flex items-center justify-center bg-gray-100 cursor-pointer hover:bg-gray-300 transition text-xl">Reset</button>
   </div>
-  <div class="h-full w-full  overflow-hidden  bg-white">
+  <div class="h-full w-full  overflow-hidden  bg-white relative">
+
     <div class="min-h-full min-w-full  relative     relative parent-selector transform " id="block-container"
-      data-before-width="100%">
+      data-before-width="100%" style="transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 1835, 1202.7);">
 
       <!-- Single box -->
       <div class="draggable w-96 border-1 absolute border-2 border-cyan-300 left-[100px] top-[100px] z-10 " id="block1">
@@ -222,41 +223,123 @@ Hello testing 2</textarea>
     </div>
     <!-- <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script> -->
     <script src='https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js'></script>
+
     <script>
-      var click = {
-        x: 0,
-        y: 0
-      };
-
-      $('.draggable').draggable()
-
-      $('.draggable').on('dragstart', function (e) {
 
 
-        click.x = e.clientX;
-        click.y = e.clientY;
+
+      //Make the DIV element draggagle:
+      $('.draggable').each(function (i, e) {
+        dragElement(e, {
+          dragEnd: function (left, top) {
+
+
+          }
+        })
+
       })
 
-      $('.draggable').on('drag', function (event, ui) {
-        var targetElement = $(ui.helper[0])[0];
-        var zoom = ui.helper[0].getBoundingClientRect().width / ui.helper[0].offsetWidth;
 
-        var original = ui.originalPosition;
+      function dragElement(selector, { dragEnd } = {}) {
+        var element = $(selector)[0]
+        if (!element) return;
+        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0, top = 0, left = 0;
 
-        // jQuery will simply use the same object we alter here
-        ui.position = {
-          left: (event.clientX - click.x + original.left) / zoom,
-          top: (event.clientY - click.y + original.top) / zoom
-        };
-      })
+
+
+
+
+        function elementDrag(e) {
+          e = e || window.event;
+          e.preventDefault();
+          var scale = element.getBoundingClientRect().width / element.offsetWidth;
+
+          // calculate the new cursor position:
+          pos1 = (pos3 - e.clientX) / scale;
+          pos2 = (pos4 - e.clientY) / scale;
+          pos3 = e.clientX;
+          pos4 = e.clientY;
+          top = (element.offsetTop - pos2)
+          left = (element.offsetLeft - pos1)
+          // set the element's new position:
+          $(element).css({ top, left })
+
+
+        }
+
+        function closeDragElement() {
+          /* stop moving when mouse button is released:*/
+
+          $(document).off('mouseup', closeDragElement)
+          // call a function whenever the cursor moves:
+          $(document).off('mousemove', elementDrag)
+          if (dragEnd) dragEnd(left, top)
+        }
+
+        function dragMouseDown(e) {
+
+          e.preventDefault();
+          // get the mouse cursor position at startup:
+          pos3 = e.clientX;
+          pos4 = e.clientY;
+          top = element.offsetTop;
+          left = element.offsetLeft;
+          $(element).css({ position: 'absolute', top, left })
+          if (Boolean(element.offsetLeft)) {
+
+          }
+          $(document).on('mouseup', closeDragElement)
+          // call a function whenever the cursor moves:
+          $(document).on('mousemove', elementDrag)
+
+        }
+        $(element).on('mousedown', dragMouseDown)
+
+      }
+    </script>
+    <script>
+
+
+      // var click = {
+      //   x: 0,
+      //   y: 0
+      // };
+
+      // $('.draggable').draggable({
+      //   start: function (e) {
+
+
+      //     click.x = e.clientX;
+      //     click.y = e.clientY;
+      //   },
+      //   drag: function (event, ui) {
+      //     var zoom = ui.helper[0].getBoundingClientRect().width / ui.helper[0].offsetWidth;
+
+      //     var original = ui.originalPosition;
+
+      //     // jQuery will simply use the same object we alter here
+      //     ui.position = {
+      //       left: (event.clientX - click.x + original.left) / zoom,
+      //       top: (event.clientY - click.y + original.top) / zoom
+      //     };
+      //   }
+      // })
+
+      const sleep = (milliseconds) => {
+        return new Promise(resolve => setTimeout(resolve, milliseconds))
+      }
+
+
       const elem = document.getElementById('block-container')
-      // const elem = document.getElementById('block1')
-      var panzoomInstance = panzoom(elem, {
 
+      var panzoomInstance = panzoom(elem, {
+        smoothScroll: false,
         zoomSpeed: 0.045, // 6.5% per mouse wheel event
         transformOrigin: { x: 0.5, y: 0.5 },
         maxZoom: 1.5,
         minZoom: 0.5,
+        // bounds: true,
+        // center: true,
         beforeMouseDown: function (e) {
 
           // allow mouse-down panning only if altKey is down. Otherwise - ignore
@@ -264,22 +347,40 @@ Hello testing 2</textarea>
           return shouldIgnore;
         }
       })
-      $(elem).prepend($('<span>').addClass('background-texture'));
 
+
+
+      $(elem).parent().prepend('<svg class="react-flow__background bg-stone-50/40" id="background-texture"  style = "position: absolute; width: 100%; height: 100%; top: 0px; left: 0px;" > <pattern id="pattern" x="79.43478586053243" y="6.86162564260303" width="100" height="100"   patternUnits="userSpaceOnUse" patternTransform="translate(-6.25,-6.25)"> <circle cx="6.25" cy="6.25" r="6.25" fill="#e7e5e4"></circle>  </pattern>   <rect x="0" y="0" width="100%" height="100%" fill="url(#pattern)"><rect> </svg >');
+
+      var dotGap = 40
+      var offset = 2;
+      var patternSize = 5;
       panzoomInstance.on('transform', function (e) {
         // This event will be called along with events above.
         var transform = e.getTransform()
-        var width = elem.scrollWidth / transform.scale
-        var height = elem.scrollHeight / transform.scale
-        $('.background-texture').css({ width: width, height: height, left: -(transform.x / transform.scale), top: -(transform.y / transform.scale) })
+
+        var scaledGap = dotGap * transform.scale;
+        var scaledSize = patternSize * transform.scale;
+        var patternOffset = scaledSize / offset
+
+        var radius = scaledSize / offset
+
+        $('#background-texture pattern').attr({ width: scaledGap, height: scaledGap, patternTransform: `translate(-${patternOffset},-${patternOffset})`, x: transform.x % scaledGap, y: transform.y % scaledGap })
+        $('#background-texture circle').attr({ cx: radius, cy: radius, r: radius })
+
+
+
+
 
       });
+
+
 
       function getTransformOriginOffset() {
         var ownerRect = elem.getBoundingClientRect();
         let transformOrigin = panzoomInstance.getTransformOrigin();
-        var x = ownerRect.width * transformOrigin.x
-        var y = ownerRect.height * transformOrigin.y
+
+
         return {
           x: ownerRect.width * transformOrigin.x, y: ownerRect.height * transformOrigin.y
         }
@@ -293,16 +394,127 @@ Hello testing 2</textarea>
         var offset = getTransformOriginOffset();
         panzoomInstance.smoothZoom(offset.x, offset.y, 0.9)
       }
+
+      function getBoundingElements() {
+
+        const scale = panzoomInstance.getTransform().scale
+        var minX, minY, maxX, maxY;
+        $('.draggable').each(function (i, e) {
+          const rect = e.getBoundingClientRect()
+
+          if (!minX) {
+            minX = rect.left;
+          } else if (minX > rect.left) {
+            minX = rect.left
+          }
+
+
+          if (!minY) {
+            minY = rect.top;
+          } else if (minY > rect.top) {
+            minY = rect.top
+          }
+
+          if (!maxX) {
+            maxX = rect.right;
+          } else if (maxX < rect.right) {
+            maxX = rect.right
+          }
+
+
+
+          if (!maxY) {
+            maxY = rect.bottom;
+          } else if (maxY < rect.bottom) {
+            maxY = rect.bottom
+          }
+
+
+        })
+        const width = Math.abs((minX - maxX) / scale)
+        const height = Math.abs((minY - maxY) / scale)
+        const targetWidth = Math.max(width, elem.offsetWidth)
+        const targetHeight = Math.max(height, elem.offsetHeight)
+
+        const targetScale = Math.min(elem.offsetWidth / width, elem.offsetHeight / height)
+
+        return { minX, minY, maxX, maxY, width, height, targetScale }
+      }
+      var initiateReset = false
       function panReset() {
-        panzoomInstance.moveTo(0, 0, 1);
-        panzoomInstance.zoomAbs(0, 0, 1);
+
+        const xys = panzoomInstance.getTransform()
+        const scale = panzoomInstance.getTransform().scale
+        const maxScale = panzoomInstance.getTransform().maxScale
+        const minScale = panzoomInstance.getTransform().minScale
+        const offsetWidth = elem.offsetWidth
+        const offsetHeight = elem.offsetHeight
+        const containerRect = elem.getBoundingClientRect()
+
+        const { minX, maxX, minY, maxY, targetScale, width, height } = getBoundingElements()
+
+
+
+        // if (targetScale < minScale) {
+
+        // }
+
+        // console.log(minX, containerRect.x, minY, containerRect.y)
+        // console.log(containerRect.x - minX, containerRect.y - minY)
+
+
+
+
+
+
+        let targetX = minX, targetY = minY;
+
+        if (offsetWidth > width) {
+          const diff = (offsetWidth - width * targetScale) / 2
+
+          targetX = targetX - diff
+        }
+        if (offsetHeight > height) {
+
+          const diff = (offsetHeight - height * targetScale) / 2
+          targetY = minY - diff
+        }
+
+
+
+
+
+        const x = containerRect.x - targetX;
+        const y = containerRect.y - targetY
+        panzoomInstance.moveTo(x, y)
+        panzoomInstance.zoomAbs(0, 0, targetScale);
+
+        if (initiateReset) {
+
+          initiateReset = false
+          setTimeout(() => {
+
+            panReset()
+          }, 100)
+        }
+
       }
 
+      function resetHandler() {
+        initiateReset = true
+        panReset()
 
+
+
+      }
 
       $('#zoomOut').on('click', panZoomOut)
       $('#zoomIn').on('click', panZoomIn)
-      $('#reset').on('click', panReset)
+      $('#reset').on('click', resetHandler)
+
+
+
+
 
     </script>
 
@@ -813,58 +1025,13 @@ Hello testing 2</textarea>
         $('.connection-group[from=' + blockId + '],.connection-group[to=' + blockId + ']').remove()
       }
     </script>
-
-    <!-- <script>
+    <!-- 
+    <script>
 
 
 
       document.addEventListener("DOMContentLoaded", function () {
 
-        window.attachDraggableEvents = function () {
-          var click = {
-            x: 0,
-            y: 0
-          };
-
-          function dragStartHandler(event) {
-
-            click.x = event.clientX;
-            click.y = event.clientY;
-          }
-
-          function dragHandler(event, ui) {
-
-            console.log(event)
-            console.clear()
-            var targetElement = $(ui.helper[0])[0];
-            var zoom = ui.helper[0].getBoundingClientRect().width / ui.helper[0].offsetWidth;
-
-            var original = ui.originalPosition;
-
-            // jQuery will simply use the same object we alter here
-            ui.position = {
-              left: (event.clientX - click.x + original.left) / zoom,
-              top: (event.clientY - click.y + original.top) / zoom
-            };
-
-          }
-
-          // First remove old addEventListeners
-          $('.movable').off('dragstart', dragStartHandler)
-          $('.movable').off('drag', dragHandler)
-
-
-          // Then add   addEventListeners
-          $('.movable').on('dragstart', dragStartHandler)
-          $('.movable').on('drag', dragHandler)
-
-
-        } //attachDraggableEvents
-
-        // observe moveable block-container and attach drag event
-        var draggableElementObserver = new MutationObserver(function mCallback(mutations, ob) {
-          attachDraggableEvents()
-        })
 
 
         // Attach zoom and pan to the editor container
@@ -880,6 +1047,7 @@ Hello testing 2</textarea>
               if (container) {
 
                 window.panzoomInstance = panzoom(container, {
+                  smoothScroll: false,
                   zoomSpeed: 0.045, // 6.5% per mouse wheel event
                   transformOrigin: { x: 0.5, y: 0.5 },
                   maxZoom: 1.5,
@@ -939,12 +1107,7 @@ Hello testing 2</textarea>
                 }
                 ob.disconnect()
 
-                // Add observe  for drag able element
-                draggableElementObserver.observe(container, {
-                  childList: true, subtree: false,
-                });
-                // Attach drag events currently mounted elements
-                attachDraggableEvents()
+
               };
             }
 
@@ -958,6 +1121,46 @@ Hello testing 2</textarea>
         // });
       })
     </script> -->
+
+    <!-- <script>
+                  var click = {
+        x: 0,
+        y: 0
+      };           
+                        
+                        
+       
+                      
+      $(element).draggable({
+refreshPositions:true,
+
+        start: function (e) {
+
+
+          click.x = e.clientX;
+          click.y = e.clientY;
+        },
+        drag: function (event, ui) {
+          var zoom = ui.helper[0].getBoundingClientRect().width / ui.helper[0].offsetWidth;
+
+          var original = ui.originalPosition;
+
+          // jQuery will simply use the same object we alter here
+          ui.position = {
+            left: (event.clientX - click.x + original.left) / zoom,
+            top: (event.clientY - click.y + original.top) / zoom
+          };
+        }
+      })            
+                        
+                        
+                        
+                        
+                        
+                        
+         
+    </script> -->
+
     <script>
 
       $("#fromNode-from1").on('click', function () {
@@ -982,6 +1185,10 @@ Hello testing 2</textarea>
       //     }, parent: '#block-container', autoUpdate: false, closeButton: true
       //   }
       // )
+
+    </script>
+
+    <script>
 
     </script>
 </body>
