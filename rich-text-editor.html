@@ -12,6 +12,7 @@
             padding: 5px 6px;
             cursor: text;
             border-radius: 3px;
+            margin-bottom: 30px;
 
         }
 
@@ -59,16 +60,34 @@
 
         .btn {
             margin-top: 10px;
+            font-size: 26px;
+            cursor: pointer;
+            display: block;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-size: 22px;
+        }
+
+        .wrapper {
+            display: inline-block;
+            min-width: 600px;
+
         }
     </style>
 </head>
 
 <body>
 
-    <div id="textBox" contenteditable="true" placeholder="Div placeholder..."></div>
-
-    <button class="btn" id="add">ID resBls8sdlfkXslf</button>
-    <button class="btn" id="add2">ID sdfkvjas6sldkfjo</button>
+    <div class="wrapper">
+        <div id="textBox" contenteditable="true" placeholder="Div placeholder..."></div>
+        <button class="btn" id="add">ID resBls8sdlfkXslf</button>
+        <button class="btn" id="add2">ID sdfkvjas6sldkfjo</button>
+    </div>
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
@@ -93,6 +112,7 @@
             if (e.key !== 'Tab') return;
 
 
+            var selection = document.getSelection();
 
             var textNode = selection.focusNode.nodeValue.match(/{{[a-z]*}}/i)
 
