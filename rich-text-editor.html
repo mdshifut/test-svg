@@ -6,8 +6,7 @@
     <title>Rich Text Editor</title>
 
     <style type="text/css">
-        #textBox {
-
+        .inputBox {
             height: auto;
             border: 2px #000000 solid;
             padding: 5px 6px;
@@ -18,50 +17,9 @@
 
         }
 
-        [contenteditable][placeholder]:empty:before {
-            content: attr(placeholder);
-            position: absolute;
-            color: gray;
-            background-color: transparent;
 
 
-        }
 
-        .text-block {
-            border: 2px solid #646464;
-            background-color: rgb(252, 242, 178);
-            border-radius: 3px;
-            padding: 0 5px;
-            text-transform: capitalize;
-            transition: 0.1s;
-        }
-
-        .text-block:focus {
-            background-color: #fff;
-        }
-
-        .text-block:hover {
-            background-color: rgb(132, 118, 32);
-        }
-
-        .id-block {
-            background-color: #41666f92;
-            border-radius: 3px;
-            padding: 0 5px;
-            transition: 0.1s;
-            margin: 3px 0;
-            color: #fff;
-        }
-
-        .selected {
-
-            background-color: #026b86;
-            color: #fff;
-        }
-
-        .id-block:hover {
-            background-color: #026b86;
-        }
 
         .btn {
             margin-top: 10px;
@@ -85,181 +43,270 @@
 
         }
     </style>
+
+
 </head>
 
 <body>
 
     <div class="wrapper">
-        <div id="textBox" contenteditable="true" placeholder="Div placeholder..."></div>
+        <div class="inputBox" id="inputBox" contenteditable="true" placeholder="Div placeholder..."></div>
         <button class="btn" id="add">ID resBls8sdlfkXslf</button>
         <button class="btn" id="add2">ID sdfkvjas6sldkfjo</button>
     </div>
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+    <style>
+        #inputBox:empty:before {
+            content: "Type here";
+            position: absolute;
+            color: gray;
+            background-color: transparent;
+
+
+        }
+
+        .text-block {
+
+            background-color: rgb(252, 242, 178);
+            border-radius: 3px;
+            padding: 0 5px;
+            text-transform: capitalize;
+            transition: 0.1s;
+
+        }
+
+
+
+        .text-block:hover {
+            background-color: rgb(132, 118, 32);
+            color: #fff;
+        }
+
+
+        .text-block.selected {
+
+            background-color: rgb(132, 118, 32);
+            color: #fff;
+        }
+
+        .id-block {
+            background-color: #41666f92;
+            border-radius: 3px;
+            padding: 0 5px;
+            transition: 0.1s;
+            margin: 3px 0;
+            color: #fff;
+        }
+
+        .id-block:hover {
+            background-color: #026b86;
+            color: #fff;
+        }
+
+
+        .id-block.selected {
+
+            background-color: #026b86;
+            color: #fff;
+        }
+    </style>
     <script type="text/javascript">
 
+        $(document).ready(function () {
+
+            function pasteHtmlAtCaret(html, selectPastedContent) {
+                var sel, range;
+
+                if (document.getSelection) {
+                    // IE9 and non-IE
+                    sel = document.getSelection();
+
+                    if (sel.focusOffset === 0 || $(sel.focusNode).hasClass('inputBox')) {
+                        html = '&nbsp;' + html
+                    }
+
+                    if ((sel.focusNode.nodeName === "#text" && sel.focusOffset === sel.focusNode.length) || $(sel.focusNode).hasClass('inputBox')) {
+                        html = html + '&nbsp;'
+                    }
 
 
-        var editableElm = document.getElementById('textBox')
+                    if (sel.getRangeAt && sel.rangeCount) {
+                        range = sel.getRangeAt(0);
+                        range.deleteContents();
 
-        $(document).on('click', function (e) {
+                        // Range.createContextualFragment() would be useful here but is
+                        // only relatively recently standardized and is not supported in
+                        // some browsers (IE9, for one)
+                        var el = document.createElement("div");
 
-            $('#textBox span').removeClass('selected')
-        })
-
-        $(editableElm).on('click', function (e) {
-            e.stopPropagation()
-            $('#textBox span').removeClass('selected')
-            $(e.target).closest('span').addClass('selected')
-        })
-
-
-        function onTabPressHandler(e) {
-
-            var selection = document.getSelection();
-
-
-
-            // If the key is not a tab then close the fn
-            if (e.key !== 'Tab') return;
-
-
-
-            var textNode = selection.focusNode.nodeValue.match(/{{[a-z]*}}/i)
-
-            // If the node is not targeted node then close the fn
-            if (!textNode) return;
-            e.preventDefault();
-
-
-
-            var range = document.createRange()
-            range.setStart(selection.focusNode, textNode.index)
-            range.setEnd(selection.focusNode, textNode.index + textNode[0].length)
-            range.deleteContents()
-
-            var value = textNode[0].slice(2, -2)
-
-            pasteHtmlAtCaret(` <span class="text-block"  contenteditable="false" >${value}</span> `)
-        }
-
-        editableElm.addEventListener('keydown', onTabPressHandler)
-
-        function caretChangeHandler(e) {
-            var selection = document.getSelection();
-
-
-
-
-            if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-            $('#textBox span').each(function (i, elem) {
-
-                if (!elem.previousSibling || elem.previousSibling?.nodeName !== '#text') {
-                    $(elem).before(' ')
+                        el.innerHTML = html;
+                        var frag = document.createDocumentFragment(), node, lastNode;
+                        while ((node = el.firstChild)) {
+                            // node.setAttribute('contenteditable', 'false')
+                            lastNode = frag.appendChild(node);
+                        }
+                        var firstNode = frag.firstChild;
+                        range.insertNode(frag);
+                        // Preserve the selection
+                        if (lastNode) {
+                            range = range.cloneRange();
+                            range.setStartAfter(lastNode);
+                            if (selectPastedContent) {
+                                range.setStartBefore(firstNode);
+                            } else {
+                                range.collapse(true);
+                            }
+                            sel.removeAllRanges();
+                            sel.addRange(range);
+                        }
+                    }
+                } else if ((sel = document.selection) && sel.type != "Control") {
+                    // IE < 9
+                    var originalRange = sel.createRange();
+                    originalRange.collapse(true);
+                    sel.createRange().pasteHTML(html);
+                    if (selectPastedContent) {
+                        range = sel.createRange();
+                        range.setEndPoint("StartToStart", originalRange);
+                        range.select();
+                    }
                 }
-                if (!elem.nextSibling || elem.nextSibling?.nodeName !== '#text') {
-                    $(elem).after(' ')
-                }
+
+            }
+
+
+            window.addDataToInputBox = function (dataStringHtml, className = 'id-block') {
+                $('#inputBox').focus()
+                pasteHtmlAtCaret(`<span class="${className}"  contenteditable="false"   >${dataStringHtml}</span>`)
+            }
+
+            // Removed selected span 
+            $(document).on('click', function (e) {
+                $('.inputBox span').removeClass('selected')
+                $(e.target).closest('span').addClass('selected')
             })
 
-            editableElm.focus()
-
-            $('#textBox span').removeClass('selected')
-            var focusNode = selection.focusNode;
-            var focusOffset = selection.focusOffset;
-            var nextElementSibling = focusNode.nextElementSibling;
-            var previousElementSibling = focusNode.previousElementSibling;
 
 
-            if (e.key === 'ArrowRight' && focusNode.nodeName === "#text") {
+            // On tab press handler 
+            function onTabPressHandler(e) {
 
-                if (focusNode.length === focusOffset &&
-                    nextElementSibling?.nodeName === 'SPAN') {
+                e.stopPropagation()
+                var selection = document.getSelection();
 
-                    $(nextElementSibling).addClass('selected')
-                }
-                if (focusOffset === 0 &&
-                    previousElementSibling?.nodeName === 'SPAN') {
+                // If the key is not a tab then close the fn
+                if (e.key !== 'Tab') return;
 
-                    $(previousElementSibling).addClass('selected')
-                }
-            }
+                var textNode = selection.focusNode.nodeValue.match(/{{[a-z]*}}/i)
 
-            if (e.key === 'ArrowLeft' && focusNode.nodeName === "#text") {
-                if (focusOffset === 0 && previousElementSibling?.nodeName === 'SPAN') {
+                // If the node is not targeted node then close the fn
+                if (!textNode) return;
+                e.preventDefault();
 
-                    $(previousElementSibling).addClass('selected')
-                }
-                if (focusNode.length === focusOffset && nextElementSibling?.nodeName === 'SPAN') {
-
-                    $(nextElementSibling).addClass('selected')
-                }
-
+                var range = document.createRange()
+                range.setStart(selection.focusNode, textNode.index)
+                range.setEnd(selection.focusNode, textNode.index + textNode[0].length)
+                range.deleteContents()
+                var value = textNode[0].slice(2, -2)
+                addDataToInputBox(value, 'text-block')
             }
 
 
 
-        }
-        editableElm.addEventListener('keyup', caretChangeHandler)
+            // When caret moves 
+            function caretChangeHandler(e) {
+                e.stopPropagation()
+                var selection = document.getSelection();
 
-        function pasteHtmlAtCaret(html, selectPastedContent) {
-            var sel, range;
-            editableElm.focus();
-            if (document.getSelection) {
-                // IE9 and non-IE
-                sel = document.getSelection();
 
-                if (sel.getRangeAt && sel.rangeCount) {
-                    range = sel.getRangeAt(0);
-                    range.deleteContents();
+                if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
 
-                    // Range.createContextualFragment() would be useful here but is
-                    // only relatively recently standardized and is not supported in
-                    // some browsers (IE9, for one)
-                    var el = document.createElement("div");
+                $('#inputBox span').each(function (i, elem) {
 
-                    el.innerHTML = html;
-                    var frag = document.createDocumentFragment(), node, lastNode;
-                    while ((node = el.firstChild)) {
-                        // node.setAttribute('contenteditable', 'false')
-                        lastNode = frag.appendChild(node);
+                    if (!elem.previousSibling || elem.previousSibling?.nodeName !== '#text') {
+                        $(elem).before(' ')
                     }
-                    var firstNode = frag.firstChild;
-                    range.insertNode(frag);
-                    // Preserve the selection
-                    if (lastNode) {
-                        range = range.cloneRange();
-                        range.setStartAfter(lastNode);
-                        if (selectPastedContent) {
-                            range.setStartBefore(firstNode);
-                        } else {
-                            range.collapse(true);
-                        }
-                        sel.removeAllRanges();
-                        sel.addRange(range);
+                    if (!elem.nextSibling || elem.nextSibling?.nodeName !== '#text') {
+                        $(elem).after(' ')
+                    }
+                })
+
+                $('#inputBox').focus()
+
+                $('#inputBox span').removeClass('selected')
+                var focusNode = selection.focusNode;
+                var focusOffset = selection.focusOffset;
+                var nextElementSibling = focusNode.nextElementSibling;
+                var previousElementSibling = focusNode.previousElementSibling;
+
+
+                if (e.key === 'ArrowRight' && focusNode.nodeName === "#text") {
+
+                    if (focusNode.length === focusOffset &&
+                        nextElementSibling?.nodeName === 'SPAN') {
+
+                        $(nextElementSibling).addClass('selected')
+                    }
+                    if (focusOffset === 0 &&
+                        previousElementSibling?.nodeName === 'SPAN') {
+
+                        $(previousElementSibling).addClass('selected')
                     }
                 }
-            } else if ((sel = document.selection) && sel.type != "Control") {
-                // IE < 9
-                var originalRange = sel.createRange();
-                originalRange.collapse(true);
-                sel.createRange().pasteHTML(html);
-                if (selectPastedContent) {
-                    range = sel.createRange();
-                    range.setEndPoint("StartToStart", originalRange);
-                    range.select();
+
+                if (e.key === 'ArrowLeft' && focusNode.nodeName === "#text") {
+                    if (focusOffset === 0 && previousElementSibling?.nodeName === 'SPAN') {
+
+                        $(previousElementSibling).addClass('selected')
+                    }
+                    if (focusNode.length === focusOffset && nextElementSibling?.nodeName === 'SPAN') {
+
+                        $(nextElementSibling).addClass('selected')
+                    }
+
                 }
+
+
+
             }
 
-        }
 
 
 
-        document.getElementById('add').addEventListener('click', () => pasteHtmlAtCaret(` <span class="id-block"  contenteditable="false"   ><b>ID</b>:resBls8sdlfkXslf</span> `))
-        document.getElementById('add2').addEventListener('click', () => pasteHtmlAtCaret(` <span class="id-block"   contenteditable="false"  ><b>ID</b>:sdfkvjas6sldkfjo</span> `))
+
+
+            // Attach zoom and pan to the editor container
+            var inputBoxObserver = new MutationObserver(function mCallback(mutations, ob) {
+                const inputBoxEl = document.getElementById('inputBox')
+                if (inputBoxEl) {
+                    $(inputBoxEl).attr('contenteditable', 'true')
+                    $(inputBoxEl).on('keydown', onTabPressHandler)
+                    $(inputBoxEl).on('keyup', caretChangeHandler)
+                    ob.disconnect()
+                }
+            });
+
+            inputBoxObserver.observe(document.body, {
+                childList: true, subtree: true,
+            });
+
+        })
     </script>
 
+
+    <script>
+        document.getElementById('add').addEventListener('click', (e) => {
+
+            addDataToInputBox(`<b>ID</b>:resBls8sdlfkXslf`)
+        })
+        document.getElementById('add2').addEventListener('click', (e) => {
+
+            addDataToInputBox(`<b>ID</b>:sdfkvjas6sldkfjo`)
+        })
+    </script>
 </body>
 
 </html>
