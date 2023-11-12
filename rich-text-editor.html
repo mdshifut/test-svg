@@ -50,7 +50,7 @@
 <body>
 
     <div class="wrapper">
-        <div class="inputBox" id="inputBox" contenteditable="true" placeholder="Div placeholder..."></div>
+        <div class="inputBox" id="inputBox" contenteditable="true" data-list="line1,line2"></div>
         <button class="btn" id="add">ID resBls8sdlfkXslf</button>
         <button class="btn" id="add2">ID sdfkvjas6sldkfjo</button>
     </div>
@@ -59,7 +59,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 
     <style>
-        #inputBox:empty:before {
+        .inputBox:empty:before {
             content: "Type here";
             position: absolute;
             color: gray;
@@ -68,29 +68,17 @@
 
         }
 
-        .text-block {
+        .green-text {
+            color: rgb(0, 155, 0);
+        }
 
-            background-color: rgb(252, 242, 178);
-            border-radius: 3px;
-            padding: 0 5px;
-            text-transform: capitalize;
-            transition: 0.1s;
-
+        .red-text {
+            color: rgb(214, 0, 0);
         }
 
 
 
-        .text-block:hover {
-            background-color: rgb(132, 118, 32);
-            color: #fff;
-        }
 
-
-        .text-block.selected {
-
-            background-color: rgb(132, 118, 32);
-            color: #fff;
-        }
 
         .id-block {
             background-color: #41666f92;
@@ -123,6 +111,7 @@
                 if (document.getSelection) {
                     // IE9 and non-IE
                     sel = document.getSelection();
+
 
                     if (sel.focusOffset === 0 || $(sel.focusNode).hasClass('inputBox')) {
                         html = '&nbsp;' + html
@@ -178,9 +167,20 @@
             }
 
 
-            window.addDataToInputBox = function (dataStringHtml, className = 'id-block') {
-                $('#inputBox').focus()
+            window.addDataToInputBox = function (dataStringHtml, className = 'id-block',) {
+
                 pasteHtmlAtCaret(`<span class="${className}"  contenteditable="false"   >${dataStringHtml}</span>`)
+            }
+
+            window.addDataToInputBoxById = function (dataStringHtml, targetId, className = 'id-block',) {
+                var targetEl = document.getElementById(targetId)
+
+                if (targetEl) {
+
+                    $(targetEl).focus()
+                    addDataToInputBox(dataStringHtml, className)
+                }
+
             }
 
             // Removed selected span 
@@ -192,26 +192,31 @@
 
 
             // On tab press handler 
-            function onTabPressHandler(e) {
+            function inputTextByManual(e) {
 
                 e.stopPropagation()
                 var selection = document.getSelection();
 
-                // If the key is not a tab then close the fn
-                if (e.key !== 'Tab') return;
 
-                var textNode = selection.focusNode.nodeValue.match(/{{[a-z]*}}/i)
+
+                var textNode = selection?.focusNode?.nodeValue?.match(/{{.*}}/i)
 
                 // If the node is not targeted node then close the fn
                 if (!textNode) return;
-                e.preventDefault();
 
-                var range = document.createRange()
-                range.setStart(selection.focusNode, textNode.index)
-                range.setEnd(selection.focusNode, textNode.index + textNode[0].length)
-                range.deleteContents()
-                var value = textNode[0].slice(2, -2)
-                addDataToInputBox(value, 'text-block')
+
+                var range = document.createRange();
+                range.setStart(selection.focusNode, textNode.index);
+                range.setEnd(selection.focusNode, textNode.index + textNode[0].length);
+                range.deleteContents();
+                var value = textNode[0].slice(2, -2);
+
+                var className = 'red-text';
+                var isConnected = $(e.target).closest('.inputBox')?.attr('data-list')?.split(',')?.includes(value);
+                if (isConnected) {
+                    className = 'green-text'
+                }
+                addDataToInputBox(textNode, className);
             }
 
 
@@ -223,8 +228,13 @@
 
 
                 if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+                var targetInputBox = $(e.target).closest('.inputBox')
 
-                $('#inputBox span').each(function (i, elem) {
+
+                if (!targetInputBox[0]) return;
+
+
+                $(targetInputBox).find('span').each(function (i, elem) {
 
                     if (!elem.previousSibling || elem.previousSibling?.nodeName !== '#text') {
                         $(elem).before(' ')
@@ -234,9 +244,9 @@
                     }
                 })
 
-                $('#inputBox').focus()
+                $(targetInputBox).focus()
 
-                $('#inputBox span').removeClass('selected')
+                $('.inputBox span').removeClass('selected')
                 var focusNode = selection.focusNode;
                 var focusOffset = selection.focusOffset;
                 var nextElementSibling = focusNode.nextElementSibling;
@@ -272,27 +282,14 @@
 
 
             }
+            $(document).on('keyup', function (e) {
+                if ($(e.target).closest('.inputBox')[0]) {
 
-
-
-
-
-
-            // Attach zoom and pan to the editor container
-            var inputBoxObserver = new MutationObserver(function mCallback(mutations, ob) {
-                const inputBoxEl = document.getElementById('inputBox')
-                if (inputBoxEl) {
-                    $(inputBoxEl).attr('contenteditable', 'true')
-                    $(inputBoxEl).on('keydown', onTabPressHandler)
-                    $(inputBoxEl).on('keyup', caretChangeHandler)
-                    ob.disconnect()
+                    inputTextByManual(e)
+                    caretChangeHandler(e)
                 }
-            });
 
-            inputBoxObserver.observe(document.body, {
-                childList: true, subtree: true,
-            });
-
+            })
         })
     </script>
 
@@ -300,11 +297,11 @@
     <script>
         document.getElementById('add').addEventListener('click', (e) => {
 
-            addDataToInputBox(`<b>ID</b>:resBls8sdlfkXslf`)
+            addDataToInputBox(`<b>ID</b>:resBls8sdlfkXslf`,)
         })
         document.getElementById('add2').addEventListener('click', (e) => {
 
-            addDataToInputBox(`<b>ID</b>:sdfkvjas6sldkfjo`)
+            addDataToInputBox(`<b>ID</b>:sdfkvjas6sldkfjo`,)
         })
     </script>
 </body>

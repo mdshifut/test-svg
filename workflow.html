@@ -322,6 +322,11 @@ Hello testing 2</textarea>
       minZoom: 0.5,
       // bounds: true,
       // center: true,
+      filterKey: function (e) {
+        // allow mouse-down panning only if altKey is down. Otherwise - ignore
+        var shouldIgnore = !!$(e.target).closest('.inputBox')[0];
+        return shouldIgnore;
+      },
       beforeMouseDown: function (e) {
 
         // allow mouse-down panning only if altKey is down. Otherwise - ignore
